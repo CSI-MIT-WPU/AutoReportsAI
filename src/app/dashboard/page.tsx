@@ -94,9 +94,11 @@ const Dashboard = () => {
         {selectedRepos.length > 0 && (
           <div>
             <h2 className="font-semibold">Selected Repos</h2>
-            {selectedRepos.map((repoId: any) => (
-              <div key={repoId}>{repoId}</div>
-            ))}
+            {repos
+              .filter((repo: any) => selectedRepos.includes(repo.id))
+              .map((repo: any) => (
+                <div key={repo.id}> {repo.name} </div>
+              ))}
           </div>
         )}
       </div>
