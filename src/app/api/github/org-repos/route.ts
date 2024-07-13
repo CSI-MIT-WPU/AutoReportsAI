@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
@@ -19,15 +19,12 @@ export async function POST(req: Request) {
     const accessToken = userDoc.data().accessToken;
 
     // 2. Fetch Repositories from GitHub API
-    const response = await fetch(
-      "https://api.github.com/user/repos?type=private&sort=pushed",
-      {
-        headers: {
-          Authorization: `token ${accessToken}`,
-          Accept: "application/vnd.github+json",
-        },
-      }
-    );
+    const response = await fetch("https://api.github.com/orgs/WorqHat/repos", {
+      headers: {
+        Authorization: `token ${accessToken}`,
+        Accept: "application/vnd.github+json",
+      },
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -37,24 +34,6 @@ export async function POST(req: Request) {
     }
 
     const repos = await response.json();
-    await Promise.all(
-      repos.map(async (repo: any) => {
-        return setDoc(
-          // Return the promise from setDoc
-          doc(db, `users/${userId}/repositories/${repo.id}`),
-          {
-            id: repo.id,
-            name: repo.name,
-            owner: repo.owner.login,
-            private: repo.private,
-            userId: userId,
-          },
-          { merge: true }
-        );
-      })
-    );
-
-    console.log("All repositories saved to Firestore!");
     return new Response(JSON.stringify(repos), {
       status: 200,
       headers: {
