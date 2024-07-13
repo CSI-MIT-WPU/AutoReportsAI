@@ -1,12 +1,15 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
+    console.log("WEBHOOK_SECRET not set");
     return new Response(
       "You need to set the WEBHOOK_SECRET environment variable",
       {
@@ -23,6 +26,7 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
+    console.log("No svix headers");
     return new Response("Error occured -- no svix headers", {
       status: 400,
     });
@@ -59,9 +63,10 @@ export async function POST(req: Request) {
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   if (!id) return new Response("User ID not found", { status: 400 });
   if (eventType === "user.created") {
-    const { first_name, last_name, email_addresses } = evt.data;
+    const { first_name, last_name, email_addresses, id } = evt.data;
     try {
       // add user to db
+      await setDoc(doc(db, "users", id), evt.data);
       console.log("User created successfully");
     } catch (error) {
       console.error("Error inserting user:", error);
@@ -71,6 +76,7 @@ export async function POST(req: Request) {
     const { first_name, last_name, email_addresses } = evt.data;
     try {
       // update user in db
+
       console.log("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);
