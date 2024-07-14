@@ -7,7 +7,10 @@ const getUserRepos = async (userId: string) => {
     const response = await getDocs(
       collection(db, `users/${userId}/repositories`)
     );
-    repos = response.docs.map((doc) => doc.data());
+    repos = response.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id.toString(),
+    }));
   } catch (error) {
     console.error("Error fetching repositories:", error);
     return [];
