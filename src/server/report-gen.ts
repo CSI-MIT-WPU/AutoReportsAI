@@ -1,4 +1,6 @@
 "use server";
+import { ratelimit } from "@/lib/ratelimit";
+import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 
 const generateReport = async (commits: any[], from: string, to: string) => {
@@ -28,6 +30,13 @@ const generateReport = async (commits: any[], from: string, to: string) => {
   };
 
   try {
+    const user = auth();
+    const userId = user?.userId;
+    if (!userId) throw new Error("User not found");
+
+    const { success } = await ratelimit.limit("generate-report-" + userId);
+    if (!success) throw new Error("Rate limit exceeded");
+
     const response = await axios(options);
     const feedback = response.data.content.trim();
     console.log("Feedback:", feedback);

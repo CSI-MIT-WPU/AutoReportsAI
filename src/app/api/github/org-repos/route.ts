@@ -1,6 +1,7 @@
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { auth } from "@clerk/nextjs/server";
+import { ratelimit } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   try {
@@ -10,6 +11,9 @@ export async function POST(req: Request) {
     if (!userId) {
       return new Response("User ID is required", { status: 400 });
     }
+
+    const { success } = await ratelimit.limit("get-org-repos-" + userId);
+    if (!success) throw new Error("Rate limit exceeded");
 
     // 1. Retrieve Access Token from Firestore
     const userDoc = await getDoc(doc(db, `users/${userId}`));
