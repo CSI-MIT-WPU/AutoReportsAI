@@ -20,7 +20,7 @@ const generateReport = async (commits: any[], from: string, to: string) => {
     method: "POST",
     url: "https://api.worqhat.com/api/ai/content/v2",
     headers: {
-      Authorization: "Bearer sk-d5e65e482489451b8bb171bd5a31da60",
+      Authorization: `Bearer ${process.env.WORQHAT_API_KEY as string}`,
       "Content-Type": "application/json",
     },
     data: {
