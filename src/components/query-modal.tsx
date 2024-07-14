@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@clerk/nextjs";
 import DatePicker from "@/components/ui/date-picker";
-import emailjs from "@emailjs/browser";
+// import emailjs from "@emailjs/browser";
 import { Textarea } from "./ui/textarea";
 import { HelpCircle } from "lucide-react";
 
@@ -47,30 +47,30 @@ export default function QueryModal() {
     const serviceId = process.env.NEXT_PUBLIC_SERVICE_ID as string;
     const templateId = process.env.NEXT_PUBLIC_TEMPLATE_ID as string;
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_KEY as string;
-    emailjs
-      .send(
-        serviceId,
-        templateId,
-        { name, email, description },
-        {
-          publicKey: publicKey,
-        }
-      )
-      .then(
-        () => {
-          toast.dismiss(id);
-          toast.success("Message sent successfully");
-          closeDialog();
-          setName("");
-          setEmail("");
-          setDescription("");
-        },
-        (error) => {
-          console.log(error);
-          toast.dismiss(id);
-          toast.error("Error sending message");
-        }
-      );
+    // emailjs
+    //   .send(
+    //     serviceId,
+    //     templateId,
+    //     { name, email, description },
+    //     {
+    //       publicKey: publicKey,
+    //     }
+    //   )
+    //   .then(
+    //     () => {
+    //       toast.dismiss(id);
+    //       toast.success("Message sent successfully");
+    //       closeDialog();
+    //       setName("");
+    //       setEmail("");
+    //       setDescription("");
+    //     },
+    //     (error) => {
+    //       console.log(error);
+    //       toast.dismiss(id);
+    //       toast.error("Error sending message");
+    //     }
+    //   );
   };
 
   return (
