@@ -16,6 +16,11 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { DatePickerWithRange } from "./range-picker";
 import React from "react";
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@clerk/nextjs";
+import { getRepoCommits } from "@/server/commit-queries";
+import { generateReport } from "@/server/report-gen";
 
 const RepoSchema = z.object({
   id: z.string(),
@@ -42,6 +47,7 @@ export function ReposList({
   repos: Repo[];
   setReport: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const user = useAuth();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -53,7 +59,61 @@ export function ReposList({
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!user)
+      return toast({ title: "User not found", description: "User not found" });
+    const userDoc = await getDoc(doc(db, `users/${user.userId}`));
+    if (!userDoc.exists()) {
+      return new Response("User not found", { status: 404 });
+    }
+    const userData = userDoc.data();
+    const accessToken = userData.accessToken;
+    const username = userData.external_accounts[0].username;
+
+    const commits = await Promise.all(
+      data.items.map(async (repo: Repo) => {
+        try {
+          const repoCommits = await getRepoCommits(
+            repo.name,
+            repo.owner,
+            accessToken,
+            username,
+            data.dateRange.from.toISOString(),
+            data.dateRange.to?.toISOString() || new Date().toISOString(),
+            100
+          );
+
+          if (typeof repoCommits === "string") {
+            console.error(
+              `Error fetching commits for ${repo.name}: ${repoCommits}`
+            );
+            return [];
+          }
+
+          return repoCommits;
+        } catch (error) {
+          console.error(`Exception fetching commits for ${repo.name}:`, error);
+          return [];
+        }
+      })
+    );
+    const allCommits = commits.flat();
+    console.log(allCommits);
+
+    const feedback = await generateReport(
+      allCommits,
+      data.dateRange.from.toISOString(),
+      data.dateRange.to?.toISOString() || new Date().toISOString()
+    );
+
+    await addDoc(collection(db, `users/${user.userId}/reports`), {
+      feedback: feedback,
+      date: new Date(),
+      items: data.items,
+    });
+
+    setReport(feedback);
+
     toast({
       title: "You submitted the following values:",
       description: (

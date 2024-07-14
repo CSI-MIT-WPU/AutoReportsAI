@@ -5,6 +5,7 @@ import { getUserRepos } from "@/server/repo-queries";
 import { useAuth } from "@clerk/nextjs";
 import React from "react";
 import { Repo, ReposList } from "./_components/repos-list";
+import { Textarea } from "@/components/ui/textarea";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,9 @@ const Dashboard = () => {
       <div className="flex space-x-4">
         <ReposList repos={repos} setReport={setReport} />
       </div>
+      {report && (
+        <Textarea className="max-w-lg" rows={10} value={report} readOnly />
+      )}
     </main>
   );
 };

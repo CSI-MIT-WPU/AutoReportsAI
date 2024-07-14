@@ -11,9 +11,14 @@ export default function Home() {
         <SignInButton />
       </SignedOut>
       <SignedIn>
-        <Link href="/dashboard">
-          <Button>Dashboard</Button>
-        </Link>
+        <div className="flex space-x-4">
+          <Link href="/dashboard">
+            <Button>Dashboard</Button>
+          </Link>
+          <Link href="/reports">
+            <Button>Reports</Button>
+          </Link>
+        </div>
         <UserButton />
       </SignedIn>
     </main>
