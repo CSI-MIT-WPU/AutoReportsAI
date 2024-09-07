@@ -1,6 +1,7 @@
 const getRepoCommits = async (
   name: string,
   owner: string,
+  branch: string,
   accessToken: string,
   username: string,
   since: string,
@@ -8,7 +9,7 @@ const getRepoCommits = async (
   perPage: number
 ) => {
   const response = await fetch(
-    `https://api.github.com/repos/${owner}/${name}/commits?since=${since}&until=${until}&per_page=${perPage}&author=${username}`,
+    `https://api.github.com/repos/${owner}/${name}/commits?sha=${branch}&since=${since}&until=${until}&per_page=${perPage}&author=${username}`,
     {
       headers: {
         Authorization: `token ${accessToken}`,

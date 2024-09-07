@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     // Assuming you have a way to get the userId from the request (e.g., Clerk session)
     const userId = auth().userId;
-
+    console.log("userId", userId);
     if (!userId) {
       return new Response("User ID is required", { status: 400 });
     }
