@@ -90,8 +90,9 @@ export function ReposList({
     const userData = userDoc.data();
     const accessToken = userData.accessToken;
     const username = userData.external_accounts[0].username;
-
-    const commits = await Promise.all(
+    console.log(data.items)
+    let commits: any[] = [];
+    await Promise.all(
       data.items.map(async (repo: Repo, index) => {
         try {
           const repoCommits = await getRepoCommits(
@@ -104,15 +105,13 @@ export function ReposList({
             data.dateRange.to?.toISOString() || new Date().toISOString(),
             100
           );
-
           if (typeof repoCommits === "string") {
             console.error(
               `Error fetching commits for ${repo.name}: ${repoCommits}`
             );
             return [];
           }
-
-          return repoCommits;
+          commits.push(repoCommits);
         } catch (error) {
           console.error(`Exception fetching commits for ${repo.name}:`, error);
           return [];
@@ -121,7 +120,6 @@ export function ReposList({
     );
     const allCommits = commits.flat();
     console.log(allCommits);
-
     const feedback = await generateReport(
       allCommits,
       data.dateRange.from.toISOString(),
@@ -146,7 +144,7 @@ export function ReposList({
     });
   }
 
-  async function getBranches(repo: Repo): Promise<any>{
+  async function getBranches(repo: Repo): Promise<any> {
     const userDoc = await getDoc(doc(db, `users/${user?.userId}`));
     if (!userDoc.exists()) {
       return new Response("User not found", { status: 404 });
@@ -187,11 +185,10 @@ export function ReposList({
   ) => {
     console.log(field)
     if (checked) {
-      setBranches([]);
-      getBranches(repo).then((branches) => {
-        console.log(branches)
-        branches.map((branch: any) => {
-          setBranches([...branches, {name: branch.name, url: branch.url}])
+      getBranches(repo).then((_branches) => {
+        console.log(_branches)
+        _branches.map((branch: Branch) => {
+          setBranches((prevBranches) => [...prevBranches, branch]);
         });
       });
       field.onChange([...field.value, repo]);
@@ -297,35 +294,34 @@ export function ReposList({
                 {
                   branches.map((branch, idx) => (
                     <FormField
-                      key={idx}
+                      key={branch.commit.sha}
                       control={form.control}
                       name="branches"
                       render={({ field }) => {
                         // console.log(field)
                         const _isChecked = field.value?.some(
-                          (item) => item?.name === branch.name
+                          (item) => item?.commit.sha === branch.commit.sha
                         );
                         return (
                           <FormItem
-                            key={idx}
+                            key={branch.commit.sha}
                             className="flex flex-row items-start space-x-3 space-y-0"
                           >
                             <FormControl>
                               <Checkbox
                                 checked={_isChecked}
-                                onCheckedChange={(checked) =>
-                                  {
-                                    handleBranchSelect(
-                                      branch,
-                                      field,
-                                      checked as boolean
-                                    )
-                                  }
+                                onCheckedChange={(checked) => {
+                                  handleBranchSelect(
+                                    branch,
+                                    field,
+                                    checked as boolean
+                                  )
+                                }
                                 }
                               />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              {branch.name}
+                              {branch.name} ({branch.commit.url.split('/')[5]})
                             </FormLabel>
                           </FormItem>
                         );
