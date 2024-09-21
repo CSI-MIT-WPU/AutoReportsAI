@@ -52,6 +52,7 @@ export async function POST(req: Request) {
             owner: repo.owner.login,
             private: repo.private,
             userId: userId,
+            ownerAvatar: repo.owner.avatar_url,
           },
           { merge: true }
         );

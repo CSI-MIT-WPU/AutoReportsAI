@@ -10,6 +10,10 @@ const getUserRepos = async (userId: string) => {
     repos = response.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id.toString(),
+      name: doc.data().name,
+      owner: doc.data().owner,
+      ownerAvatar: doc.data().ownerAvatar,
+      private: doc.data().private,
     }));
   } catch (error) {
     console.error("Error fetching repositories:", error);
