@@ -20,17 +20,6 @@ const Dashboard = async () => {
   // const [report, setReport] = React.useState<string>("");
   // const [branches, setBranches] = React.useState<Branch[]>([]);
 
-  const getRepos = async () => {
-    const response = await fetch("/api/github/repos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data: Repo[] = await response.json();
-    // setRepos(data);
-  };
-
   const handleGetToken = async () => {
     await fetch("/api/get-access-token", {
       method: "POST",
@@ -94,7 +83,7 @@ const Dashboard = async () => {
           }
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-          <ReposCard repos={storedRepos}/>
+          <ReposCard repos={storedRepos.reverse()}/>
           <ReportsCard/>
         </div>
       </main>
