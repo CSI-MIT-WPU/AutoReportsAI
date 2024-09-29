@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
+import HeroSection from "./_components/HeroSection";
+import ContactSection from "./_components/contact";
+import CTA from "./_components/CTA";
+import Footer from "./_components/footer";
+import ProblemSection from "./_components/problem-section";
+import SolutionsSection from "./_components/solutions-section";
+import Navbar from "./_components/navbar";
+
 export default function Home() {
     return (
         <main className="flex min-h-screen flex-col items-center justify-center space-y-5">
@@ -24,13 +32,14 @@ export default function Home() {
                 <UserButton />
             </SignedIn>
 
-            <section className="w-full min-h-screen flex flex-col items-center justify-start">
-                <div className="pt-32 px-10 text-center space-y-5">
-                    <h1 className="text-5xl tracking-tighter font-medium">Take a look on your <span className="p-2 rounded-lg bg-gray-100 font-semibold text-red-500 text-4xl font-mono">git commits</span> with AI</h1>
-                    <p className="text-base tracking-wide">No matter what problem you have, our AI can help you solve it.</p>
-                    <Button >Make Your First Report</Button>
-                </div>
-
+            <section className="w-full min-h-screen flex flex-col">
+                {/* <Navbar/> */}
+                <HeroSection />
+                <CTA />
+                {/* <ProblemSection/> */}
+                {/* <SolutionsSection /> */}
+                <ContactSection />
+                <Footer />
 
             </section>
 
@@ -42,4 +51,4 @@ export default function Home() {
 export const metadata: Metadata = {
     title: "Home | Auto Reports AI",
     description: "Generate reports for your Github repositories",
-  };
+};
