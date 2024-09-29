@@ -34,8 +34,8 @@ const generateReport = async (commits: any[], from: string, to: string) => {
     const userId = user?.userId;
     if (!userId) throw new Error("User not found");
 
-    const { success } = await ratelimit.limit("generate-report-" + userId);
-    if (!success) throw new Error("Rate limit exceeded");
+    // const { success } = await ratelimit.limit("generate-report-" + userId);
+    // if (!success) throw new Error("Rate limit exceeded");
 
     const response = await axios(options);
     const feedback = response.data.content.trim();

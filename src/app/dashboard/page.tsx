@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { getUserRepos } from "@/server/repo-queries";
 import { useAuth } from "@clerk/nextjs";
 import React from "react";
-import { Repo, ReposList } from "./_components/repos-list";
+import { Branch, Repo, ReposList } from "./_components/repos-list";
 import { Textarea } from "@/components/ui/textarea";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 const Dashboard = () => {
   const [repos, setRepos] = React.useState<Repo[]>([]);
   const [report, setReport] = React.useState<string>("");
+  const [branches, setBranches] = React.useState<Branch[]>([]);
   const user = useAuth();
 
   const handleGetToken = async () => {
@@ -68,7 +69,7 @@ const Dashboard = () => {
         Local Repo Fetch
       </Button>
       <div className="flex space-x-4">
-        <ReposList repos={repos} setReport={setReport} />
+        <ReposList repos={repos} setReport={setReport} branches={branches} setBranches={setBranches}/>
       </div>
       {report && (
         <Textarea className="max-w-lg" rows={10} value={report} readOnly />

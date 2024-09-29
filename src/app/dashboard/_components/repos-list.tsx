@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { date, z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,7 +28,19 @@ const RepoSchema = z.object({
   owner: z.string(),
 });
 
+const CommitSchema = z.object({
+  sha: z.string(),
+  url: z.string(),
+});
+
+const BranchSchema = z.object({
+  name: z.string(),
+  commit: CommitSchema,
+  protected: z.boolean(),
+})
+
 export type Repo = z.infer<typeof RepoSchema>;
+export type Branch = z.infer<typeof BranchSchema>;
 
 const FormSchema = z.object({
   items: z.array(RepoSchema).refine((value) => value.some((item) => item), {
@@ -38,14 +50,21 @@ const FormSchema = z.object({
     from: z.date(),
     to: z.date().nullable().optional(),
   }),
+  branches: z.array(BranchSchema).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one branch.",
+  }),
 });
 
 export function ReposList({
   repos,
   setReport,
+  branches,
+  setBranches
 }: {
   repos: Repo[];
   setReport: React.Dispatch<React.SetStateAction<string>>;
+  branches: Branch[];
+  setBranches: React.Dispatch<React.SetStateAction<Branch[]>>;
 }) {
   const user = useAuth();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -56,10 +75,12 @@ export function ReposList({
         from: new Date(),
         to: undefined,
       },
+      branches: [],
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data)
     if (!user)
       return toast({ title: "User not found", description: "User not found" });
     const userDoc = await getDoc(doc(db, `users/${user.userId}`));
@@ -69,28 +90,28 @@ export function ReposList({
     const userData = userDoc.data();
     const accessToken = userData.accessToken;
     const username = userData.external_accounts[0].username;
-
-    const commits = await Promise.all(
-      data.items.map(async (repo: Repo) => {
+    console.log(data.items)
+    let commits: any[] = [];
+    await Promise.all(
+      data.items.map(async (repo: Repo, index) => {
         try {
           const repoCommits = await getRepoCommits(
             repo.name,
             repo.owner,
+            data.branches[index].name,
             accessToken,
             username,
             data.dateRange.from.toISOString(),
             data.dateRange.to?.toISOString() || new Date().toISOString(),
             100
           );
-
           if (typeof repoCommits === "string") {
             console.error(
               `Error fetching commits for ${repo.name}: ${repoCommits}`
             );
             return [];
           }
-
-          return repoCommits;
+          commits.push(repoCommits);
         } catch (error) {
           console.error(`Exception fetching commits for ${repo.name}:`, error);
           return [];
@@ -99,7 +120,6 @@ export function ReposList({
     );
     const allCommits = commits.flat();
     console.log(allCommits);
-
     const feedback = await generateReport(
       allCommits,
       data.dateRange.from.toISOString(),
@@ -124,6 +144,37 @@ export function ReposList({
     });
   }
 
+  async function getBranches(repo: Repo): Promise<any> {
+    const userDoc = await getDoc(doc(db, `users/${user?.userId}`));
+    if (!userDoc.exists()) {
+      return new Response("User not found", { status: 404 });
+    }
+    const userData = userDoc.data();
+    const accessToken = userData.accessToken;
+    const username = userData.external_accounts[0].username;
+
+    const response = await fetch(
+      `https://api.github.com/repos/${repo.owner}/${repo.name}/branches`,
+      {
+        headers: {
+          Authorization: `token ${accessToken}`,
+          Accept: "application/vnd.github+json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return new Response(`GitHub API Error: ${errorText}`, {
+        status: response.status,
+      });
+    }
+
+    const branches = await response.json();
+    console.log(branches);
+    return branches;
+  }
+
   const handleRepoSelect = (
     repo: Repo,
     field: {
@@ -132,10 +183,33 @@ export function ReposList({
     },
     checked: boolean
   ) => {
+    console.log(field)
     if (checked) {
+      getBranches(repo).then((_branches) => {
+        console.log(_branches)
+        _branches.map((branch: Branch) => {
+          setBranches((prevBranches) => [...prevBranches, branch]);
+        });
+      });
       field.onChange([...field.value, repo]);
     } else {
       field.onChange(field.value.filter((item) => item.id !== repo.id));
+    }
+  };
+
+  const handleBranchSelect = (
+    branch: Branch,
+    field: {
+      value: Branch[];
+      onChange: (value: Branch[]) => void;
+    },
+    checked: boolean
+  ) => {
+    console.log(field);
+    if (checked) {
+      field.onChange([...field.value, branch]);
+    } else {
+      field.onChange(field.value.filter((item) => item.name !== branch.name));
     }
   };
 
@@ -200,8 +274,61 @@ export function ReposList({
                     }}
                   />
                 ))}
-
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="max-h-[500px] overflow-y-auto">
+          <FormField
+            control={form.control}
+            name="branches"
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">Branches</FormLabel>
+                  <FormDescription>
+                    Select branches
+                  </FormDescription>
+                </div>
+                {
+                  branches.map((branch, idx) => (
+                    <FormField
+                      key={branch.commit.sha}
+                      control={form.control}
+                      name="branches"
+                      render={({ field }) => {
+                        // console.log(field)
+                        const _isChecked = field.value?.some(
+                          (item) => item?.commit.sha === branch.commit.sha
+                        );
+                        return (
+                          <FormItem
+                            key={branch.commit.sha}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={_isChecked}
+                                onCheckedChange={(checked) => {
+                                  handleBranchSelect(
+                                    branch,
+                                    field,
+                                    checked as boolean
+                                  )
+                                }
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {branch.name} ({branch.commit.url.split('/')[5]})
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))
+                }
               </FormItem>
             )}
           />
