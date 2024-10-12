@@ -24,8 +24,9 @@ export async function POST(req: Request) {
     const accessToken = userDoc.data().accessToken;
 
     // 2. Fetch Repositories from GitHub API
+    console.log(userId)
     const githubApiResponse = await fetch(
-      "https://api.github.com/user/repos?type=private&sort=pushed",
+      "https://api.github.com/user/repos?sort=pushed",
       {
         headers: {
           Authorization: `token ${accessToken}`,
@@ -44,33 +45,35 @@ export async function POST(req: Request) {
     const localRepos = await getUserRepos(userId);
     const githubRepos: Array<any> = await githubApiResponse.json();
 
-    // const githubRepoSet = new Set(githubRepos.map(repo => repo.id));
-    // const reposToDelete = localRepos.filter((localRepo) => {
-    //   !githubRepoSet.has(localRepo.id)
-    // });
+    const githubRepoSet = new Set(githubRepos.map(repo => repo.id));
+    const reposToDelete = localRepos.filter((localRepo) => {
+      if (!githubRepoSet.has(localRepo.id)) {
+        return localRepo;
+      }
+    });
 
-    // // 3. Perform batch delete in case repo exists in local storage and not on github
-    // const batch = writeBatch(db);
-    // reposToDelete.forEach((repo) => {
-    //   const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
-    //   batch.delete(repoRef);
-    // });
+    // 3. Perform batch delete in case repo exists in local storage and not on github
+    const batch = writeBatch(db);
+    reposToDelete.forEach((repo) => {
+      const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+      batch.delete(repoRef);
+    });
 
-    // // 4. Add/Update document in local storage
-    // githubRepos.map((repo) => {
-    //   const formattedRepo = {
-    //     id: repo.id,
-    //     name: repo.name,
-    //     owner: repo.owner.login,
-    //     private: repo.private,
-    //     userId: userId,
-    //     ownerAvatar: repo.owner.avatar_url,
-    //   };
-    //   const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
-    //   batch.set(repoRef, repo);
-    // });
+    // 4. Add/Update document in local storage
+    githubRepos.map((repo) => {
+      const formattedRepo = {
+        id: repo.id,
+        name: repo.name,
+        owner: repo.owner.login,
+        private: repo.private,
+        userId: userId,
+        ownerAvatar: repo.owner.avatar_url,
+      };
+      const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+      batch.set(repoRef, formattedRepo);
+    });
 
-    // await batch.commit();
+    await batch.commit();
 
 
     // await Promise.all(
