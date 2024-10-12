@@ -1,7 +1,8 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
 import { auth } from "@clerk/nextjs/server";
 import { ratelimit } from "@/lib/ratelimit";
+import { getUserRepos } from "@/server/repo-queries";
 
 export async function POST(req: Request) {
   try {
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     const accessToken = userDoc.data().accessToken;
 
     // 2. Fetch Repositories from GitHub API
-    const response = await fetch(
+    const githubApiResponse = await fetch(
       "https://api.github.com/user/repos?type=private&sort=pushed",
       {
         headers: {
@@ -33,34 +34,65 @@ export async function POST(req: Request) {
       }
     );
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    if (!githubApiResponse.ok) {
+      const errorText = await githubApiResponse.text();
       return new Response(`GitHub API Error: ${errorText}`, {
-        status: response.status,
+        status: githubApiResponse.status,
       });
     }
 
-    const repos = await response.json();
-    await Promise.all(
-      repos.map(async (repo: any) => {
-        return setDoc(
-          // Return the promise from setDoc
-          doc(db, `users/${userId}/repositories/${repo.id}`),
-          {
-            id: repo.id,
-            name: repo.name,
-            owner: repo.owner.login,
-            private: repo.private,
-            userId: userId,
-            ownerAvatar: repo.owner.avatar_url,
-          },
-          { merge: true }
-        );
-      })
-    );
+    const localRepos = await getUserRepos(userId);
+    const githubRepos: Array<any> = await githubApiResponse.json();
+
+    // const githubRepoSet = new Set(githubRepos.map(repo => repo.id));
+    // const reposToDelete = localRepos.filter((localRepo) => {
+    //   !githubRepoSet.has(localRepo.id)
+    // });
+
+    // // 3. Perform batch delete in case repo exists in local storage and not on github
+    // const batch = writeBatch(db);
+    // reposToDelete.forEach((repo) => {
+    //   const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+    //   batch.delete(repoRef);
+    // });
+
+    // // 4. Add/Update document in local storage
+    // githubRepos.map((repo) => {
+    //   const formattedRepo = {
+    //     id: repo.id,
+    //     name: repo.name,
+    //     owner: repo.owner.login,
+    //     private: repo.private,
+    //     userId: userId,
+    //     ownerAvatar: repo.owner.avatar_url,
+    //   };
+    //   const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+    //   batch.set(repoRef, repo);
+    // });
+
+    // await batch.commit();
+
+
+    // await Promise.all(
+    //   githubRepos.map(async (repo: any) => {
+    //     return setDoc(
+    //       // Return the promise from setDoc
+    //       doc(db, `users/${userId}/repositories/${repo.id}`),
+    //       {
+    //         id: repo.id,
+    //         name: repo.name,
+    //         owner: repo.owner.login,
+    //         private: repo.private,
+    //         userId: userId,
+    //         ownerAvatar: repo.owner.avatar_url,
+    //       },
+    //       { merge: true }
+    //     );
+    //   })
+    // );
 
     console.log("All repositories saved to Firestore!");
-    return new Response(JSON.stringify(repos), {
+    return new Response(JSON.stringify(githubRepos), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
