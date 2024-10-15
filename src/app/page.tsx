@@ -14,28 +14,33 @@ import { FAQS } from "./_components/faqs";
 import FreeTrial from "./_components/freeTrial";
 import Footer from "./_components/footer";
 import Blog from "./_components/blog";
+import { Navbar } from "./_components/Navbar";
 
 export default function Home() {
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center space-y-5">
-            <ModeToggle />
-            <SignedOut>
-                <SignInButton />
-            </SignedOut>
+        <main className="flex min-h-screen flex-col items-center justify-center">
+            <Navbar />
 
-            <SignedIn>
-                <div className="flex space-x-4">
-                    <Link href="/dashboard">
-                        <Button>Dashboard</Button>
-                    </Link>
-                    <Link href="/reports">
-                        <Button>Reports</Button>
-                    </Link>
-                </div>
-                <UserButton />
-            </SignedIn>
+            <section className="w-full flex flex-col items-center justify-center space-y-7 pt-20">
+                <ModeToggle />
+                <SignedOut>
+                    <SignInButton />
+                </SignedOut>
 
-            <section className="w-full flex flex-col items-center justify-center space-y-7">
+                <SignedIn>
+                    <div className="flex space-x-4">
+                        <Link href="/dashboard">
+                            <Button>Dashboard</Button>
+                        </Link>
+                        <Link href="/reports">
+                            <Button>Reports</Button>
+                        </Link>
+                    </div>
+                    <UserButton />
+                </SignedIn>
+
+                {/*  */}
+
                 <HeroSection />
                 <HeroVid />
                 <LeadingTeams />
