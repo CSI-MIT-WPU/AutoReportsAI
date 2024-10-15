@@ -3,14 +3,17 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-
-import HeroSection from "./_components/HeroSection";
-import ContactSection from "./_components/contact";
-import CTA from "./_components/CTA";
+import HeroSection from "@/app/_components/heroSection";
+import HeroVid from "@/app/_components/heroVid";
+import LeadingTeams from "./_components/leadingTeams";
+import ProblemSec from "./_components/problemSec";
+import SolutionSec from "./_components/solutionSec";
+import HowItWorks from "./_components/howItWorks";
+import TestimonialSec from "./_components/TestimonialSec";
+import { FAQS } from "./_components/faqs";
+import FreeTrial from "./_components/freeTrial";
 import Footer from "./_components/footer";
-import ProblemSection from "./_components/problem-section";
-import SolutionsSection from "./_components/solutions-section";
-import Navbar from "./_components/navbar";
+import Blog from "./_components/blog";
 
 export default function Home() {
     return (
@@ -32,15 +35,18 @@ export default function Home() {
                 <UserButton />
             </SignedIn>
 
-            <section className="w-full min-h-screen flex flex-col">
-                {/* <Navbar/> */}
+            <section className="w-full flex flex-col items-center justify-center space-y-7">
                 <HeroSection />
-                <CTA />
-                {/* <ProblemSection/> */}
-                {/* <SolutionsSection /> */}
-                <ContactSection />
+                <HeroVid />
+                <LeadingTeams />
+                <ProblemSec />
+                <SolutionSec />
+                <HowItWorks />
+                <TestimonialSec />
+                <FAQS />
+                <Blog />
+                <FreeTrial />
                 <Footer />
-
             </section>
 
 
