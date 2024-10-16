@@ -23,7 +23,7 @@ function HowItWorks() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    stroke-width="2"
+                    strokeWidth="2"
                     d="M3 7l3-3m0 0l3 3m-3-3v18M21 13l-3 3m0 0l-3-3m3 3V3"
                   />
                 </svg>
@@ -54,7 +54,7 @@ function HowItWorks() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    stroke-width="2"
+                    strokeWidth="2"
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
@@ -85,7 +85,7 @@ function HowItWorks() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    stroke-width="2"
+                    strokeWidth="2"
                     d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0v12m-4-4h8"
                   />
                 </svg>
