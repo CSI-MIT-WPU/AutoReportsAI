@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { signInWithCustomToken } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+// import { auth } from "@/lib/firebase";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useTheme } from "next-themes";
 import Image from "next/image";

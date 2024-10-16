@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
-import Navbar from "./_components/navbar";
+import Navbar from "./_components/Navbar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -38,7 +38,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
             {children}
           </ThemeProvider>
         </body>

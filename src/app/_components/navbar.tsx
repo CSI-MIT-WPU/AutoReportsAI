@@ -1,133 +1,206 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
+const Navbar = () => {
+  return (
+    <div className="w-full dark:bg-black/90 bg-background/60 backdrop-blur border-b flex items-center justify-between px-16 py-4 fixed top-0 z-20">
+      <div>
+        <h3 className="font-semibold text-xl tracking-tighter">
+          AutoReportsAI
+        </h3>
+      </div>
 
-export const Navbar = () => {
-    return (
-        <div className='w-full dark:bg-black/90 bg-background/60 backdrop-blur border-b flex items-center justify-between px-16 py-4 fixed top-0 z-20'>
-            <div>
-                <h3 className='font-semibold text-xl tracking-tighter'>AutoReportsAI</h3>
+      <div className="flex items-center justify-center space-x-5">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost">Features</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[500px]">
+            <div className="grid grid-cols-4 gap-4 text-xs font-medium">
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
             </div>
+          </PopoverContent>
+        </Popover>
 
-            <div className='flex items-center justify-center space-x-5'>
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="ghost">Features</Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[500px]">
-                        <div className='grid grid-cols-4 gap-4 text-xs font-medium'>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                        </div>
-                    </PopoverContent>
-                </Popover>
-
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="ghost">Solutions</Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[500px]">
-                        <div className='grid grid-cols-4 gap-4 text-xs font-medium'>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                        </div>
-                    </PopoverContent>
-                </Popover>
-
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="ghost">Blog</Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[500px]">
-                        <div className='grid grid-cols-4 gap-4 text-xs font-medium'>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div className='col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group'>
-                                <h4 className='font-semibold group-hover:text-red-500'>For small businesses</h4>
-                                <p className='text-slate-500'>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                        </div>
-                    </PopoverContent>
-                </Popover>
-
-                <Button variant="outline">Login</Button>
-                <Button variant="destructive">Get started for free</Button>
-
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost">Solutions</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[500px]">
+            <div className="grid grid-cols-4 gap-4 text-xs font-medium">
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
             </div>
+          </PopoverContent>
+        </Popover>
 
-        </div>
-    )
-}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost">Blog</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[500px]">
+            <div className="grid grid-cols-4 gap-4 text-xs font-medium">
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+              <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
+                <h4 className="font-semibold group-hover:text-red-500">
+                  For small businesses
+                </h4>
+                <p className="text-slate-500">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
 
+        <Button variant="outline">Login</Button>
+        <Button variant="destructive">Get started for free</Button>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
 // <div className="grid gap-4">
 //                         <div className="space-y-2">
 //                             <h4 className="font-medium leading-none">Dimensions</h4>
