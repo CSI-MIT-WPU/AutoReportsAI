@@ -8,6 +8,8 @@ const getUserReports = async (userId: string) => {
     reports = response.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id.toString(),
+      date: doc.data().date,
+      feedback: doc.data().feedback
     }));
   } catch (error) {
     console.error("Error fetching reports:", error);
