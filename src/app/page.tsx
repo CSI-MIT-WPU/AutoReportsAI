@@ -15,7 +15,7 @@ import FreeTrial from "./_components/freeTrial";
 import Footer from "./_components/footer";
 import Blog from "./_components/blog";
 import HeroSection from "./_components/HeroSection";
-import Navbar from "./_components/Navbar";
+import Navbar from "./_components/navbar";
 
 export default function Home() {
   return (
