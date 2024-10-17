@@ -88,7 +88,8 @@ const Navbar = () => {
                   For small businesses
                 </h4>
                 <p className="text-slate-500">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Lorem ipsum, dolor sit amet consectetur adipisicing Lorem,
+                  ipsum dolor.
                 </p>
               </div>
               <div className="col-span-2 space-y-1 hover:bg-red-100 rounded-md p-2 group">
