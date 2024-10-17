@@ -6,7 +6,8 @@ import ReposCard from "./_components/repos-card";
 import { getUserRepos } from "@/server/repo-queries";
 import ReportsCard from "./_components/reports-card";
 import { getUserReports } from "@/server/reports-queries";
-import { FolderGit2, GitBranch, GitCommit, GitFork } from 'lucide-react';
+import { FolderGit2, GitBranch, GitCommit, GitFork } from "lucide-react";
+import Navbar from "./_components/navbar";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,6 @@ const Dashboard = async () => {
     });
   };
 
-
   const getOrgRepos = async () => {
     const response = await fetch("/api/github/org-repos", {
       method: "POST",
@@ -46,42 +46,43 @@ const Dashboard = async () => {
       cardTitle: "Total Repos",
       cardMain: "32 Repos",
       cardSecondary: "15 Public, 17 Private",
-      cardIcon: <FolderGit2 size={24} />
+      cardIcon: <FolderGit2 size={24} />,
     },
     {
       cardTitle: "Total Commits",
       cardMain: "104 Commits",
       cardSecondary: "82 Public, 22 Private",
-      cardIcon: <GitCommit size={24} />
+      cardIcon: <GitCommit size={24} />,
     },
     {
       cardTitle: "Total Branches",
       cardMain: "4 Branches",
       cardSecondary: "2 feature, 2 fixes",
-      cardIcon: <GitBranch size={24} />
+      cardIcon: <GitBranch size={24} />,
     },
     {
       cardTitle: "Total Forks",
       cardMain: "23 Forks",
       cardSecondary: "12 forks, 11 spoons",
-      cardIcon: <GitFork size={24} />
+      cardIcon: <GitFork size={24} />,
     },
-  ]
+  ];
 
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-        {
-          tempData.map((data, index) => {
-            return <InfoCard key={index} {...data} />
-          })
-        }
-      </div>
-      <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <ReposCard repos={storedRepos.reverse()} />
-        <ReportsCard reports={storedReports.reverse().slice(0,5)}/>
-      </div>
-    </main>
+    <>
+      <Navbar />
+      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          {tempData.map((data, index) => {
+            return <InfoCard key={index} {...data} />;
+          })}
+        </div>
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+          <ReposCard repos={storedRepos.reverse()} />
+          <ReportsCard reports={storedReports.reverse().slice(0, 5)} />
+        </div>
+      </main>
+    </>
   );
 };
 
