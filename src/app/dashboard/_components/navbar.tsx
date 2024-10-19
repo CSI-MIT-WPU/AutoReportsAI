@@ -1,26 +1,8 @@
 import Link from "next/link";
-import { CircleUser, Menu, AudioWaveform, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { Menu, AudioWaveform } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Navbar() {
   return (
@@ -44,6 +26,12 @@ export default function Navbar() {
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Reports
+        </Link>
+        <Link
+          href="/create-template"
+          className="text-muted-foreground hover:text-foreground"
+        >
+          Templates
         </Link>
       </nav>
       <Sheet>
@@ -73,6 +61,12 @@ export default function Navbar() {
               className="text-muted-foreground hover:text-foreground"
             >
               Reports
+            </Link>
+            <Link
+              href="/create-template"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Templates
             </Link>
           </nav>
         </SheetContent>
