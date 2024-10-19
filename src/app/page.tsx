@@ -1,4 +1,6 @@
 "use client";
+
+
 import type { Metadata } from "next";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -17,42 +19,48 @@ import Blog from "./_components/blog";
 import HeroSection from "./_components/HeroSection";
 import Navbar from "./_components/navbar";
 
+
+
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <Navbar />
 
-      <section className="w-full flex flex-col items-center justify-center space-y-7 pt-20">
-        <ModeToggle />
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
+    return (
+        <main className="flex min-h-screen flex-col items-center justify-center">
+            <Navbar />
 
-        <SignedIn>
-          <div className="flex space-x-4">
-            <Link href="/dashboard">
-              <Button>Dashboard</Button>
-            </Link>
-            <Link href="/reports">
-              <Button>Reports</Button>
-            </Link>
-          </div>
-          <UserButton />
-        </SignedIn>
-        <HeroSection />
-        <HeroVid />
-        <LeadingTeams />
-        <ProblemSec />
-        <SolutionSec />
-        <HowItWorks />
-        <TestimonialSec />
-        <FAQS />
-        <Blog />
-        <FreeTrial />
-        <Footer />
-      </section>
-    </main>
-  );
+            <section className="w-full flex flex-col items-center justify-center space-y-7 pt-20">
+                <ModeToggle />
+                <SignedOut>
+                    <SignInButton />
+                </SignedOut>
+
+                <SignedIn>
+                    <div className="flex space-x-4">
+                        <Link href="/dashboard">
+                            <Button>Dashboard</Button>
+                        </Link>
+                        <Link href="/reports">
+                            <Button>Reports</Button>
+                        </Link>
+                    </div>
+                    <UserButton />
+                </SignedIn>
+
+                <HeroSection />
+                <HeroVid />
+
+                <ProblemSec />
+                <SolutionSec />
+                <HowItWorks />
+                <TestimonialSec />
+                <FAQS />
+
+                <FreeTrial />
+                <Footer />
+
+
+            </section>
+        </main>
+    );
 }
 
 // export const metadata: Metadata = {
