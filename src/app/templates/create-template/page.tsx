@@ -22,7 +22,7 @@ import {
 const TemplateFormSchema = z.object({
     title: z.string().min(3),
     description: z.string().max(200),
-    file: z.instanceof(File, {message: "File is required!"}).refine(file => file.type.startsWith('application/pdf'), {
+    file: z.instanceof(File, { message: "File is required!" }).refine(file => file.type.startsWith('application/pdf'), {
         message: 'Please upload a PDF file.',
     }),
 });
@@ -48,7 +48,7 @@ export function CreateTemplate() {
     return (
         <Form {...form}>
             <form className="h-screen flex justify-center items-center" onSubmit={form.handleSubmit(onSubmit)}>
-                <Card className="grid grid-cols-2 items-center justify-center gap-x-8 p-14">
+                <Card className="grid md:grid-cols-2 items-center justify-center gap-x-8 p-14">
                     <div className="flex flex-col gap-4">
                         <CardHeader className="px-0 pt-0">
                             <CardTitle className="text-2xl">Add Template</CardTitle>
@@ -90,9 +90,9 @@ export function CreateTemplate() {
                                 )}
                             />
                         </div>
-                        <Button className="w-full" type="submit">Create Template</Button>
+                        <Button className="w-full hidden md:block" type="submit">Create Template</Button>
                     </div>
-                    <CardContent className="h-full grid gap-4 pb-0">
+                    <CardContent className="h-full hidden md:grid gap-4 pb-0 ">
                         <Dropzone
                             onDrop={(acceptedFiles: File[], fileRejections: any, event: any) => {
                                 if (fileRejections.length > 0) {
@@ -110,10 +110,10 @@ export function CreateTemplate() {
                                 <div className=" h-full flex flex-col items-center justify-center">
                                     <input {...dropzone.getInputProps()} />
                                     {form.formState.errors.file && (
-                                            <p className="text-red-500 text-sm">
-                                                {form.formState.errors.file.message}
-                                            </p>
-                                        )}
+                                        <p className="text-red-500 text-sm">
+                                            {form.formState.errors.file.message}
+                                        </p>
+                                    )}
                                     {
                                         dropzone.isDragAccept ? (
                                             <div className='text-sm font-medium'>Drop your file here!</div>
@@ -140,6 +140,24 @@ export function CreateTemplate() {
                             )}
                         </Dropzone>
                     </CardContent>
+                    <div className="md:hidden">
+                        <FormField
+                            control={form.control}
+                            name="file"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>File</FormLabel>
+                                    <Input type="file" onChange={(e) => field.onChange(e.target.files?.[0])} />
+                                    {form.formState.errors.file && (
+                                        <p className="text-red-500 text-sm">
+                                            {form.formState.errors.file.message}
+                                        </p>
+                                    )}
+                                </FormItem>
+                            )}
+                        />
+                    <Button className="w-full mt-4" type="submit">Create Template</Button>
+                    </div>
                 </Card>
             </form>
         </Form>
