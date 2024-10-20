@@ -1,15 +1,15 @@
 "use client"
 
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import React from "react";
 import { useForm } from "react-hook-form"
 import { UploadIcon } from "lucide-react"
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod";
 import Dropzone, { DropzoneState } from 'shadcn-dropzone'
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import {
     Card,
     CardContent,
@@ -17,7 +17,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-
 
 const TemplateFormSchema = z.object({
     title: z.string().min(3),
@@ -41,8 +40,20 @@ export function CreateTemplate() {
     });
 
     async function onSubmit(data: z.infer<typeof TemplateFormSchema>) {
-        console.log("first")
-        console.log(data);
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("file", data.file);
+        const response = await fetch('/api/templates', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            console.log('Template created successfully');
+        } else {
+            console.error('Failed to create template');
+        }
     }
 
     return (
