@@ -1,9 +1,11 @@
 import { db } from "@/lib/firebase";
+import { extractHeaders } from "@/server/extract-header";
+import { extractText } from "@/server/extract-text";
 import { auth } from "@clerk/nextjs/server";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-//POST request to create a new template doc on firebase
+//POST request to create a new custom-template
 export async function POST(request: Request) {
     try {
         const userId = auth().userId;
@@ -41,6 +43,14 @@ export async function POST(request: Request) {
             createdAt: new Date().toISOString(),
         });
 
+        // 5. Send API request to worqhat-API to extract text from the PDF file
+        const extractedText = await extractText(file);
+        console.log(extractedText);
+
+        // 6. Get headings from the extracted text
+        const headings = await extractHeaders(extractedText);
+        console.log("Headers:", headings);
+        
         return new Response("Template created successfully", { status: 200 });
     } catch (error) {
         console.error("Error creating a new template", error);
