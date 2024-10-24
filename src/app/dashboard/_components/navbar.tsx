@@ -28,7 +28,7 @@ export default function Navbar() {
           Reports
         </Link>
         <Link
-          href="/create-template"
+          href="/templates"
           className="text-muted-foreground hover:text-foreground"
         >
           Templates
@@ -63,7 +63,7 @@ export default function Navbar() {
               Reports
             </Link>
             <Link
-              href="/create-template"
+              href="/templates"
               className="text-muted-foreground hover:text-foreground"
             >
               Templates
