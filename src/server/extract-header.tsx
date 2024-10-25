@@ -6,9 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 //Extracts headers from a long string of text.
 const extractHeaders = async (text: string) => {
     const prompt = `Extract all headings from the provided text and return them to me in a space separated format.
-                    Make sure not to add any additional text to your response. Headings are labels or titles that organize 
-                    content (e.g., "Title," "Date," etc.). They may include colons (":") 
-                    or stand alone as a term representing a section. List all headings,
+                    Make sure not to add any additional text to your response. Headings are labels that organize 
+                    content (e.g., "Title," "Date," etc.). They may include colons (":"). List all headings,
                     ignoring the content under them. Include repeated headings and 
                     contextually implied ones like "Dt." for "Date." Avoid extracting
                     URLs, contact details, or metadata unless clearly labeled as a heading.
