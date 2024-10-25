@@ -2,11 +2,21 @@ import { db } from "@/lib/firebase";
 import { extractHeaders } from "@/server/extract-header";
 import { extractText } from "@/server/extract-text";
 import { auth } from "@clerk/nextjs/server";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 //POST request to create a new custom-template
 export async function POST(request: Request) {
+    let storageRef;
+    let docRef;
+    let headings = `
+        Title: 
+        Date: 
+        Summary: 
+        Completed: 
+        In progress:  
+        Outcomes:  
+        Commits:`;
     try {
         const userId = auth().userId;
         if (!userId) {
@@ -31,12 +41,13 @@ export async function POST(request: Request) {
 
         // 3. Add file to firestore storage
         const storage = getStorage();
-        const storageRef = ref(storage, `templates/${userId}/${Date.now()}-${file.name}`);
+        storageRef = ref(storage, `templates/${userId}/${Date.now()}-${file.name}`);
         const snapshot = await uploadBytes(storageRef, file);
         const fileUrl = await getDownloadURL(snapshot.ref);
 
         // 4. Create a new template doc
-        await setDoc(doc(db, `users/${userId}/templates/${Date.now()}`), {
+        docRef = doc(db, `users/${userId}/templates/${Date.now()}`);
+        await setDoc(docRef, {
             title: title,
             description: description,
             fileUrl: fileUrl,
@@ -45,15 +56,36 @@ export async function POST(request: Request) {
 
         // 5. Send API request to worqhat-API to extract text from the PDF file
         const extractedText = await extractText(file);
-        console.log(extractedText);
+        if (extractedText === "Unable to extract text from PDF file.") {
+            return new Response("Unable to extract text from PDF file.", { status: 500 });
+        }
 
         // 6. Get headings from the extracted text
-        const headings = await extractHeaders(extractedText);
-        console.log("Headers:", headings);
-        
+        headings = await extractHeaders(extractedText);
+        if (headings === "Unable to extract headers.") {
+            return new Response("Unable to extract headers.", { status: 500 });
+        }
+
+        // 7. Add headers to template doc
+        headings = headings.replace(/:/g, " ");
+        await setDoc(docRef, { headings: headings }, { merge: true });
+
         return new Response("Template created successfully", { status: 200 });
     } catch (error) {
         console.error("Error creating a new template", error);
+       
+        // In case of failure, clean storage by removing added file and associated template doc
+        if (storageRef) {
+            await deleteObject(storageRef).catch((deleteError) => {
+                console.error("Failed to delete file from storage:", deleteError);
+            });
+        }
+        if (docRef) {
+            await deleteDoc(docRef).catch((deleteError) => {
+                console.error("Failed to delete template doc:", deleteError);
+            } );
+        }
+
         return new Response("Internal Server Error", { status: 500 });
     }
 }
