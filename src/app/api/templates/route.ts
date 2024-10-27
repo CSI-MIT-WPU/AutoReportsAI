@@ -1,14 +1,15 @@
 import { db } from "@/lib/firebase";
-import { extractHeaders } from "@/server/extract-header";
-import { extractText } from "@/server/extract-text";
 import { auth } from "@clerk/nextjs/server";
+import { extractText } from "@/server/extract-text";
+import { extractHeaders } from "@/server/extract-header";
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 //POST request to create a new custom-template
 export async function POST(request: Request) {
-    let storageRef;
     let docRef;
+    let storageRef;
+    const uniqueId = crypto.randomUUID();
     let headings = `
         Title: 
         Date: 
@@ -41,12 +42,12 @@ export async function POST(request: Request) {
 
         // 3. Add file to firestore storage
         const storage = getStorage();
-        storageRef = ref(storage, `templates/${userId}/${Date.now()}-${file.name}`);
+        storageRef = ref(storage, `templates/${userId}/${uniqueId}-${file.name}`);
         const snapshot = await uploadBytes(storageRef, file);
         const fileUrl = await getDownloadURL(snapshot.ref);
 
         // 4. Create a new template doc
-        docRef = doc(db, `users/${userId}/templates/${Date.now()}`);
+        docRef = doc(db, `users/${userId}/templates/${uniqueId}`);
         await setDoc(docRef, {
             title: title,
             description: description,
@@ -66,9 +67,10 @@ export async function POST(request: Request) {
             return new Response("Unable to extract headers.", { status: 500 });
         }
 
-        // 7. Add headers to template doc
+        // 7. Add list of headers to template doc
         headings = headings.replace(/:/g, " ");
-        await setDoc(docRef, { headings: headings }, { merge: true });
+        const headingArray = headings.split(" ").filter(word => word.trim() !== "");
+        await setDoc(docRef, { headings: headingArray }, { merge: true });
 
         return new Response("Template created successfully", { status: 200 });
     } catch (error) {
