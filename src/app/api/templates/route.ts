@@ -2,7 +2,7 @@ import { db } from "@/lib/firebase";
 import { auth } from "@clerk/nextjs/server";
 import { extractText } from "@/server/extract-text";
 import { extractHeaders } from "@/server/extract-header";
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 //POST request to create a new custom-template
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
         return new Response("Template created successfully", { status: 200 });
     } catch (error) {
         console.error("Error creating a new template", error);
-       
+
         // In case of failure, clean storage by removing added file and associated template doc
         if (storageRef) {
             await deleteObject(storageRef).catch((deleteError) => {
@@ -85,9 +85,29 @@ export async function POST(request: Request) {
         if (docRef) {
             await deleteDoc(docRef).catch((deleteError) => {
                 console.error("Failed to delete template doc:", deleteError);
-            } );
+            });
         }
 
         return new Response("Internal Server Error", { status: 500 });
+    }
+}
+
+//GET request to retrieve all custom-templates
+export async function GET(request: Request) {
+    try {
+        const userId = auth().userId;
+        if (!userId) {
+            return new Response("User ID is required", { status: 400 });
+        }
+        const userDoc = await getDoc(doc(db, `users/${userId}`));
+        if (!userDoc.exists()) {
+            return new Response("User not found", { status: 404 });
+        }
+        const querySnapshot = await getDocs(collection(db, `users/${userId}/templates`));
+        const templates = querySnapshot.docs.map(doc => doc.data());
+        return new Response(JSON.stringify(templates), {status: 200});
+    } catch (error) {
+        console.error("Error retrieving templates", error);
+        return new Response("An error occurred", { status: 500 });
     }
 }
