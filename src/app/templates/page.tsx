@@ -6,6 +6,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { TemplateList } from './_components/templates-list';
+import { TemplateViewer } from './_components/templates-viewer';
 
 export interface CustomTemplate {
   title: string;
@@ -79,12 +80,9 @@ export default function Templates() {
           defaultSize={655}
           className="hidden md:block"
         >
-          {/* <ReportsViewer
-            interview={
-              data.find((item) => item.reportId === selectedMail) || data[0]
-            }
-            user={user}
-          /> */}
+          <TemplateViewer
+            customTemplate={selectedTemplate || customTemplates[0]}
+          />
         </ResizablePanel>
       </ResizablePanelGroup>
     </TooltipProvider>

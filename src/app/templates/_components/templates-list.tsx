@@ -1,9 +1,13 @@
+"use client";
+
+
 import React from 'react'
 import { cn } from '@/lib/utils';
 import { CustomTemplate } from '../page';
 import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
+import TemplatesMobileViewer from './templates-mobile-viewer';
 
 export const TemplateList: React.FC<{
     customTemplates: CustomTemplate[],
@@ -16,6 +20,9 @@ export const TemplateList: React.FC<{
         setSelectedTemplate,
         loading,
     }) => {
+    
+    const [isOpen, setIsOpen] = React.useState(false);
+
     return (
         <>
             <ScrollArea className="">
@@ -58,6 +65,13 @@ export const TemplateList: React.FC<{
                     }
                 </div>
             </ScrollArea>
+            <TemplatesMobileViewer
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                template={
+                    customTemplates.filter((customTemplate) => customTemplate.createdAt === selectedTemplate.createdAt)[0]
+                }
+            />
         </>
     )
 }
