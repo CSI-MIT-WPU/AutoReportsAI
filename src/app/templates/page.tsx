@@ -1,8 +1,11 @@
 "use client";
 
 import React from 'react'
-import { SideBar } from './_components/sidebar'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { TemplateList } from './_components/templates-list';
 
 export interface CustomTemplate {
   title: string;
@@ -39,44 +42,51 @@ export default function Templates() {
   }, []);
 
   return (
-    <div className='flex w-full'>
-      <div>
-        <SidebarProvider>
-          <SideBar customTemplates={customTemplates}
-            selectedTemplate={selectedTemplate as CustomTemplate}
-            setSelectedTemplate={setSelectedTemplate}
-            loading={loading} 
-          />
-          <SidebarTrigger />
-        </SidebarProvider>
-      </div>
-      <div className='flex flex-col w-[80%] p-8'>
-        {
-          selectedTemplate ? (
-            <>
-              <h2 className='self-center scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
-                {selectedTemplate?.title}
-              </h2>
-              <div className='flex'>
-                <p className='font-bold underline'>Description:</p>
-                <p>&nbsp;{selectedTemplate?.description}</p>
-              </div>
-              <div className='flex'>
-                <p className='font-bold underline'>Created:</p>
-                <p>&nbsp;{selectedTemplate?.createdAt}</p>
-              </div>
-              <div className='self-center mt-8'>
-                <iframe
-                  src={selectedTemplate?.fileUrl}
-                  className="w-full md:w-[500px] h-[70vh] max-w-full"
-                  style={{ maxWidth: '100%', border: 'none' }}
+    <TooltipProvider delayDuration={0}>
+      <ResizablePanelGroup
+        direction="horizontal"
+        onLayout={(sizes: number[]) => {
+          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+            sizes,
+          )}`;
+        }}
+        className="h-full max-h-[calc(100vh-58px)] items-stretch"
+      >
+        <div className="fixed bottom-0 right-20">
+        </div>
+        <ResizablePanel defaultSize={440} minSize={30}>
+          <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <form>
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search"
+                  className="pl-8"
                 />
               </div>
-            </>
-          ) :
-            <div className='self-center text-2xl text-white'>Select a template to view</div>
-        }
-      </div>
-    </div>
+            </form>
+          </div>
+          <TemplateList
+            customTemplates={customTemplates}
+            selectedTemplate={selectedTemplate || customTemplates[0]}
+            setSelectedTemplate={setSelectedTemplate}
+            loading={loading}
+          />
+
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel
+          defaultSize={655}
+          className="hidden md:block"
+        >
+          {/* <ReportsViewer
+            interview={
+              data.find((item) => item.reportId === selectedMail) || data[0]
+            }
+            user={user}
+          /> */}
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </TooltipProvider>
   )
 }
