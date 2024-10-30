@@ -1,8 +1,10 @@
 "use client";
 
 import React from 'react'
+import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { TemplateList } from './_components/templates-list';
 import { TemplateViewer } from './_components/templates-viewer';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
@@ -18,9 +20,10 @@ export default function Templates() {
 
   const [customTemplates, setCustomTemplates] = React.useState([] as CustomTemplate[]);
   const [selectedTemplate, setSelectedTemplate] = React.useState<CustomTemplate | null>(null);
-  const [open, setOpen] = React.useState(false);
+  const [serachTerm, setSearchTerm] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     async function getCustomTemplates() {
@@ -53,16 +56,21 @@ export default function Templates() {
       className="min-h-screen items-stretch"
     >
       <ResizablePanel defaultSize={440} minSize={30}>
-        <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <form>
+        <div className="flex justify-between gap-4 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <form className='w-[80%]'>
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search"
                 className="pl-8"
+                defaultValue={serachTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </form>
+          <Button>
+            <Link href="/templates/create-template">Create New Template</Link>
+          </Button>
         </div>
         <TemplateList
           customTemplates={customTemplates}
@@ -71,6 +79,7 @@ export default function Templates() {
           loading={loading}
           setOpen={setOpen}
           open={open}
+          searchTerm={serachTerm}
         />
       </ResizablePanel>
       <ResizableHandle withHandle />

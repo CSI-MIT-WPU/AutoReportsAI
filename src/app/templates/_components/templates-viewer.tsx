@@ -11,7 +11,7 @@ export const TemplateViewer: React.FC<{
         <div className="flex h-full flex-col">
             {customTemplate ? (
                 <>
-                    <div className="flex flex-1 flex-col p-4 space-y-4 overflow-y-scroll">
+                    <div className="flex flex-1 flex-col p-4 space-y-4">
                         <div>
                             <div className="font-semibold text-center text-2xl">
                                 {customTemplate.title}

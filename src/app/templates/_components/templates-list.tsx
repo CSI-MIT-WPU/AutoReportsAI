@@ -10,19 +10,21 @@ import { ScrollArea } from '@radix-ui/react-scroll-area';
 import TemplatesMobileViewer from './templates-mobile-viewer';
 
 export const TemplateList: React.FC<{
-    customTemplates: CustomTemplate[],
-    selectedTemplate: CustomTemplate,
-    setSelectedTemplate: any
-    loading: boolean,
-    setOpen: any,
-    open: boolean
+        customTemplates: CustomTemplate[],
+        selectedTemplate: CustomTemplate,
+        setSelectedTemplate: any
+        loading: boolean,
+        setOpen: any,
+        open: boolean
+        searchTerm: string
     }> = ({
         customTemplates,
         selectedTemplate,
         setSelectedTemplate,
         loading,
         setOpen,
-        open
+        open,
+        searchTerm,
     }) => {
     const isMobile = useIsMobile();
     return (
@@ -42,37 +44,40 @@ export const TemplateList: React.FC<{
                                 </div>
                             </div>
                         ) : (
-                            customTemplates.map((customTemplate, index) => {
-                                if (!customTemplate.createdAt) return null;
-                                return (
-                                    <button
-                                        key={index}
-                                        className={cn(
-                                            "flex justify-between items-start rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-                                            selectedTemplate.createdAt === customTemplate.createdAt && "bg-muted",
-                                        )}
-                                        onClick={() => {
-                                            setSelectedTemplate(customTemplate)
-                                            setOpen(true)
-                                        }}
-                                    >
-                                        <div>
-                                            <div className="text-lg font-bold">{customTemplate.title}</div>
-                                            <div className="text-sm">{customTemplate.description}</div>
-                                        </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {formatDistanceToNow(customTemplate.createdAt) + " ago"}
-                                        </div>
-                                    </button>
-                                );
-                            })
+                            customTemplates
+                                .filter(customTemplate =>
+                                    searchTerm === "" || customTemplate.title.toLowerCase().includes(searchTerm.toLowerCase())
+                                )
+                                .map((customTemplate, index) => {
+                                    if (!customTemplate.createdAt) return null;
+                                    return (
+                                        <button
+                                            key={index}
+                                            className={cn(
+                                                "flex justify-between items-start rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+                                                selectedTemplate.createdAt === customTemplate.createdAt && "bg-muted",
+                                            )}
+                                            onClick={() => {
+                                                setSelectedTemplate(customTemplate)
+                                                setOpen(true)
+                                            }}
+                                        >
+                                            <div>
+                                                <div className="text-lg font-bold">{customTemplate.title}</div>
+                                                <div className="text-sm">{customTemplate.description}</div>
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                                {formatDistanceToNow(customTemplate.createdAt) + " ago"}
+                                            </div>
+                                        </button>
+                                    );
+                                })
                         )
                     }
                 </div>
             </ScrollArea>
             {
                 isMobile ? (
-
                     <TemplatesMobileViewer
                         open={open}
                         setOpen={setOpen}
