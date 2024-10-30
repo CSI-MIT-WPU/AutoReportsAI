@@ -1,10 +1,10 @@
 "use client";
 
-
 import React from 'react'
 import { cn } from '@/lib/utils';
 import { CustomTemplate } from '../page';
 import { formatDistanceToNow } from 'date-fns';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import TemplatesMobileViewer from './templates-mobile-viewer';
@@ -24,7 +24,7 @@ export const TemplateList: React.FC<{
         setOpen,
         open
     }) => {
-
+    const isMobile = useIsMobile();
     return (
         <>
             <ScrollArea className="">
@@ -32,15 +32,15 @@ export const TemplateList: React.FC<{
                     {
                         loading ? (
                             <div className="flex flex-col gap-8 pt-8">
-                            <div className="space-y-2">
-                                <Skeleton className="h-6 w-full" />
-                                <Skeleton className="h-4 w-1/2" />
+                                <div className="space-y-2">
+                                    <Skeleton className="h-6 w-full" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Skeleton className="h-6 w-full" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <Skeleton className="h-6 w-full" />
-                                <Skeleton className="h-4 w-1/2" />
-                            </div>
-                        </div>
                         ) : (
                             customTemplates.map((customTemplate, index) => {
                                 if (!customTemplate.createdAt) return null;
@@ -70,13 +70,20 @@ export const TemplateList: React.FC<{
                     }
                 </div>
             </ScrollArea>
-            <TemplatesMobileViewer
-                open={open}
-                setOpen={setOpen}
-                template={
-                    customTemplates.filter((customTemplate) => customTemplate.createdAt === selectedTemplate.createdAt)[0]
-                }
-            />
+            {
+                isMobile ? (
+
+                    <TemplatesMobileViewer
+                        open={open}
+                        setOpen={setOpen}
+                        template={
+                            customTemplates.filter((customTemplate) => customTemplate.createdAt === selectedTemplate.createdAt)[0]
+                        }
+                    />
+                ) : (
+                    null
+                )
+            }
         </>
     )
 }

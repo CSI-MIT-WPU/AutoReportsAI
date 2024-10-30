@@ -1,12 +1,11 @@
 "use client";
 
 import React from 'react'
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { TemplateList } from './_components/templates-list';
 import { TemplateViewer } from './_components/templates-viewer';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 
 export interface CustomTemplate {
   title: string;
