@@ -14,19 +14,21 @@ export const TemplateList: React.FC<{
     selectedTemplate: CustomTemplate,
     setSelectedTemplate: any
     loading: boolean,
+    setOpen: any,
+    open: boolean
     }> = ({
         customTemplates,
         selectedTemplate,
         setSelectedTemplate,
         loading,
+        setOpen,
+        open
     }) => {
-    
-    const [isOpen, setIsOpen] = React.useState(false);
 
     return (
         <>
             <ScrollArea className="">
-                <div className="flex flex-col gap-2 p-4 pt-0 h-[82vh] overflow-y-scroll">
+                <div className="flex flex-col gap-2 p-4 pt-0 h-[82vh]">
                     {
                         loading ? (
                             <div className="flex flex-col gap-8 pt-8">
@@ -49,7 +51,10 @@ export const TemplateList: React.FC<{
                                             "flex justify-between items-start rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
                                             selectedTemplate.createdAt === customTemplate.createdAt && "bg-muted",
                                         )}
-                                        onClick={() => setSelectedTemplate(customTemplate)}
+                                        onClick={() => {
+                                            setSelectedTemplate(customTemplate)
+                                            setOpen(true)
+                                        }}
                                     >
                                         <div>
                                             <div className="text-lg font-bold">{customTemplate.title}</div>
@@ -66,8 +71,8 @@ export const TemplateList: React.FC<{
                 </div>
             </ScrollArea>
             <TemplatesMobileViewer
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
+                open={open}
+                setOpen={setOpen}
                 template={
                     customTemplates.filter((customTemplate) => customTemplate.createdAt === selectedTemplate.createdAt)[0]
                 }

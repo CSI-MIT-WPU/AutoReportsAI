@@ -11,44 +11,32 @@ export const TemplateViewer: React.FC<{
             <div className="flex h-full flex-col">
                 {customTemplate ? (
                     <>
-                        <div className="flex flex-1 flex-col p-4 space-y-4 overflow-y-scroll pb-20">
+                        <div className="flex flex-1 flex-col p-4 space-y-4 overflow-y-scroll">
                             <div>
-                                <div className="font-semibold text-center text-xl">
-                                    { customTemplate.title }
+                                <div className="font-semibold text-center text-2xl">
+                                    {customTemplate.title}
                                 </div>
                                 <Separator className="my-2" />
-                                <div className="flex-1 whitespace-pre-wrap text-center">
-                                    date from to
-                                </div>
                             </div>
-
-                            <div>
-                                <div className="font-semibold text-lg">Score</div>
-                            </div>
-                            {/* Ai Suggestions */}
-                            <div>
-                                <div className="font-semibold text-lg">AI Suggestions</div>
-                                <Separator className="my-2" />
-                                <div className="flex-1 whitespace-pre-wrap text-sm">
-                                    <div className="flex flex-col text-wrap">
-                                        suggestio
+                            <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-2">
+                                    <div className="text-sm font-extrabold">Created At:</div>
+                                    <div className="text-sm text-gray-300 dark:text-neutral-300">
+                                        {new Date(customTemplate.createdAt).toLocaleString()}
                                     </div>
                                 </div>
-                            </div>
-                            {/* Ai Feedback */}
-                            <div>
-                                <div className="font-semibold text-lg">AI Feedback</div>
-                                <Separator className="my-2" />
-                                <div className="whitespace-pre-wrap text-sm text-wrap">
-                                    feedback
+                                <div className="flex flex-col gap-2">
+                                    <div className="text-sm font-extrabold">Description:</div>
+                                    <div className="text-sm text-gray-300 dark:text-neutral-300">
+                                        {customTemplate.description}
+                                    </div>
                                 </div>
-                            </div>
-                            {/* Human Feedback */}
-                            <div>
-                                <div className="font-semibold text-lg">Human Feedback</div>
-                                <Separator className="my-2" />
-                                <div className="whitespace-pre-wrap text-sm text-wrap">
-                                   human feedback
+                                <div className="w-full h-full flex justify-center items-center">
+                                    <iframe
+                                        src={customTemplate.fileUrl}
+                                        className="h-[32rem]"
+                                        style={{ width: "70%" }}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -240,13 +228,12 @@ export const TemplateViewer: React.FC<{
                                 </filter>
                             </defs>
                         </svg>
-
                         <div className="max-w-sm mx-auto">
                             <p className="mt-2 font-medium text-gray-800 dark:text-neutral-200">
-                                Create a Report
+                                Create a Template
                             </p>
                             <p className="mb-5 text-sm text-gray-500 dark:text-neutral-500">
-                                Create a Report to see the results of your interview.
+                                Create a template to view it here!
                             </p>
                         </div>
                     </div>

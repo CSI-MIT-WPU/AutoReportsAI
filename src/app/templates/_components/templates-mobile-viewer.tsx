@@ -12,37 +12,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { CustomTemplate } from "../page";
 
-
-function convertObjectToArray(jsonObject: Record<string, number>) {
-    const result = [];
-
-    for (const [key, value] of Object.entries(jsonObject)) {
-        if (key === "OverallScore") {
-            continue;
-        }
-        result.push({
-            subject: key,
-            A: value,
-            B: value,
-            fullMark: 10,
-        });
-    }
-
-    return result;
-}
-
 export default function TemplatesMobileViewer({
-    isOpen,
-    setIsOpen,
+    open,
+    setOpen,
     template,
 }: {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     template: CustomTemplate | null;
 }) {
 
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Interview Details</DialogTitle>
@@ -101,7 +82,7 @@ export default function TemplatesMobileViewer({
                     )}
                 </div>
                 <DialogFooter>
-                    <Button onClick={() => setIsOpen(false)}>Close</Button>
+                    <Button onClick={() => setOpen(false)}>Close</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
