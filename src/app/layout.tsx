@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
+import Navbar from "./dashboard/_components/navbar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -30,6 +31,9 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
+          <SignedIn>
+            <Navbar />
+          </SignedIn>
           <Toaster />
           <ThemeProvider
             attribute="class"
