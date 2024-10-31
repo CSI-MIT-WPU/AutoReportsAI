@@ -1,16 +1,14 @@
 "use client";
 
-import { getUserReports } from "@/server/reports-queries";
-import { useAuth } from "@clerk/nextjs";
 import React from "react";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Search } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Timestamp } from "firebase/firestore";
+import { getUserReports } from "@/server/reports-queries";
 import { ReportsList } from "./_components/reports-list";
 import { ReportViewer } from "./_components/reports-viewer";
-import { Timestamp } from "firebase/firestore";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 export interface Report {
   id: string,

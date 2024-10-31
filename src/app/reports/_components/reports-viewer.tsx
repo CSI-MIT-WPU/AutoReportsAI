@@ -1,9 +1,10 @@
 
-import { Separator } from "@/components/ui/separator";
 import { Report } from "../page";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
 export const ReportViewer: React.FC<{
-        report: Report | null,
+    report: Report | null,
     }> = ({
         report,
     }) => {
@@ -20,16 +21,19 @@ export const ReportViewer: React.FC<{
                         </div>
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2">
-                                <div className="text-sm font-extrabold">Created At:</div>
+                                <div className="text-sm font-extrabold">Created On:</div>
                                 <div className="text-sm text-gray-300 dark:text-neutral-300">
-                                    
+                                    {new Date(report.date.seconds * 1000).toLocaleDateString("en-GB")}
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <div className="text-sm font-extrabold">Description:</div>
-                                <div className="text-sm text-gray-300 dark:text-neutral-300">
-                                    {report.feedback}
-                                </div>
+                                <div className="text-sm font-extrabold">Report:</div>
+                                <Textarea
+                                    rows={30}
+                                    readOnly
+                                    value={report.feedback}
+                                    style={{ scrollbarWidth: "none", width: "100%", fontSize: "0.875rem" }}
+                                />
                             </div>
                         </div>
                     </div>
