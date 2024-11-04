@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { getUserRepos } from "@/server/repo-queries";
-import { ReposList } from "./_components/repos-list";
-
-import ReposCard from '@/app/dashboard/_components/repos-card';
 
 export const dynamic = "force-dynamic";
 import { z } from "zod";
@@ -29,6 +26,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { RepoList } from "./_components/repos-list";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BranchList } from "./_components/branches-list";
 
 const RepoSchema = z.object({
     id: z.string(),
@@ -66,6 +66,7 @@ const FormSchema = z.object({
 
 const GenerateReport = () => {
     const [repos, setRepos] = React.useState<Repo[]>([]);
+    const [reposLoading, setReposLoading] = React.useState<boolean>(false);
     const [report, setReport] = React.useState<string>("");
     const [branches, setBranches] = React.useState<Branch[]>([]);
     const user = useAuth();
@@ -77,45 +78,6 @@ const GenerateReport = () => {
     };
     const previousStep = () => {
         setStep(prevStep => prevStep - 1);
-    };
-
-    // selected repo, branches, date
-    // 3 component
-
-
-    const handleGetToken = async () => {
-        await fetch("/api/get-access-token", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                userId: user?.userId,
-                provider: "oauth_github",
-            }),
-        });
-    };
-
-    const getRepos = async () => {
-        const response = await fetch("/api/github/repos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data: Repo[] = await response.json();
-        setRepos(data);
-    };
-
-    const getOrgRepos = async () => {
-        const response = await fetch("/api/github/org-repos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data: Repo[] = await response.json();
-        setRepos(data);
     };
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -196,6 +158,7 @@ const GenerateReport = () => {
     }
 
     async function getBranches(repo: Repo): Promise<any> {
+        console.log("getting branches")
         const userDoc = await getDoc(doc(db, `users/${user?.userId}`));
         if (!userDoc.exists()) {
             return new Response("User not found", { status: 404 });
@@ -264,210 +227,105 @@ const GenerateReport = () => {
         }
     };
 
+    
+    //THIS USE EFFECT CAUSED 52K requests to be sent:
+    // React.useEffect(() => {
+    //     if(user){
+    //         setReposLoading(true);
+    //         getUserRepos(user?.userId as string)
+    //             .then((data) => {
+    //                 setRepos(data);
+    //                 setReposLoading(false);
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error fetching repositories:", error);
+    //                 setReposLoading(false);
+    //             }
+    //         );
+    //     }
+    // }, [user]); i think the issue was that a new user object is passed on every render even if the user info is the same thus causing an infinite loop
+
+
+    //This useEffect is the correct one (i think)
+    React.useEffect(() => {
+        if(user.userId){
+            setReposLoading(true);
+            getUserRepos(user.userId as string)
+                .then((data) => {
+                    setRepos(data);
+                    setReposLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching repositories:", error);
+                    setReposLoading(false);
+                }
+            );
+        }
+    }, [user.userId]); // does not cause an infinite loop because userId stays the same
 
     return (
-        <>
-            <main className="flex min-h-screen flex-col items-center justify-center space-y-5">
-                <h1 className="text-lg font-bold">Dashboard</h1>
-                <div className="flex space-x-4 justify-center">
-                    <Button onClick={handleGetToken}>Get Token</Button>
-                    <Button onClick={getRepos}>Get Repos</Button>
-                    <Button onClick={getOrgRepos}>Get Org Repos</Button>
-                </div>
-                <Button
-                    onClick={async () => {
-                        if (!user) return;
-                        const reposData = await getUserRepos(user.userId as string);
-                        console.log(reposData);
-                        setRepos(reposData as Repo[]);
-                    }}
-                >
-                    Local Repo Fetch
-                </Button>
-                <div className="flex space-x-4">
-                    <ReposList repos={repos} setReport={setReport} branches={branches} setBranches={setBranches} />
-                </div>
-                {report && (
-                    <Textarea className="max-w-lg" rows={10} value={report} readOnly />
-                )}
-            </main>
-
-            <section className="w-full min-h-screen flex flex-col items-center justify-center bg-background p-10">
-                <div className="max-w-4xl w-full bg-card shadow-lg rounded-lg p-8 text-card-foreground space-y-8">
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
-                            {step === 1 && (
+        <section className="w-full min-h-screen flex flex-col items-center justify-center bg-background p-10">
+            <div className="max-w-4xl w-full bg-card shadow-lg rounded-lg p-8 text-card-foreground space-y-8">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        {
+                            step === 1 && (
                                 <div className="space-y-5">
                                     <h2 className="text-3xl font-bold">1. Choose the Repository</h2>
                                     <p>Select the repository you want to generate the report for. You can only proceed with one repository at a time.</p>
-
-                                    {/* <ReposList repos={repos} setReport={setReport} branches={branches} setBranches={setBranches} /> */}
-                                    <FormField
-                                        control={form.control}
-                                        name="items"
-                                        render={() => (
-                                            <FormItem>
-                                                <div className="mb-4">
-                                                    <FormLabel className="text-base">Repos</FormLabel>
-                                                    <FormDescription>
-                                                        Select the items you want to display in the sidebar.
-                                                    </FormDescription>
-                                                </div>
-
-                                                {repos.toReversed().map((repo) => (
-                                                    <FormField
-                                                        key={repo.id}
-                                                        control={form.control}
-                                                        name="items"
-                                                        render={({ field }) => {
-                                                            const isChecked = field.value.some(
-                                                                (item) => item.id === repo.id
-                                                            );
-                                                            return (
-                                                                <FormItem
-                                                                    key={repo.id}
-                                                                    className="flex flex-row items-start space-x-3 space-y-0"
-                                                                >
-                                                                    <FormControl>
-                                                                        <Checkbox
-                                                                            checked={isChecked}
-                                                                            onCheckedChange={(checked) =>
-                                                                                handleRepoSelect(
-                                                                                    repo,
-                                                                                    field,
-                                                                                    checked as boolean
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </FormControl>
-                                                                    <FormLabel className="font-normal">
-                                                                        {repo.name}
-                                                                    </FormLabel>
-                                                                </FormItem>
-                                                            );
-                                                        }}
-                                                    />
-                                                ))}
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <div className="flex justify-end">
-                                        <Button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-foreground hover:text-primary" onClick={nextStep}>
-                                            Next: Choose Branch
-                                        </Button>
-                                    </div>
+                                    {
+                                        reposLoading ? (
+                                            <p>Loading your repositories...</p>
+                                        ) :
+                                            <RepoList form={form} repos={repos} handleRepoSelect={handleRepoSelect} />
+                                    }
                                 </div>
+                            )
+                        }
+                        {step === 2 && (
+                            <div className="space-y-5">
+                                <h2 className="text-3xl font-bold">2. Choose the Branch</h2>
+                                <p>Select the branch you want to generate the report for. You can only proceed with one branch at a time.</p>
+                                <BranchList form={form} branches={branches} handleBranchSelect={handleBranchSelect} />
+                            </div>
+                        )}
+                        {step === 3 && (
+                            <div className="space-y-5">
+                                <h2 className="text-3xl font-bold">3. Choose the Date Range</h2>
+                                <p>Select the date range you want to generate the report for.</p>
+                                <FormField
+                                    control={form.control}
+                                    name="dateRange"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Date Range</FormLabel>
+                                            <DatePickerWithRange field={field as any} />
+                                        </FormItem>
+                                    )}
+                                />                         
+                            </div>
+                        )}
+                        <div className="flex justify-between">
+                            {step > 1 && (
+                                <Button onClick={previousStep}>Previous</Button>
                             )}
-
-                            {step === 2 && (
-                                <div className="space-y-5">
-                                    <h2 className="text-3xl font-bold">2. Choose the Branch</h2>
-                                    <p>Now, select the branch you want to use for this report. Different branches may contain different data, so make sure to pick the right one.</p>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="branches"
-                                        render={() => (
-                                            <FormItem>
-                                                <div className="mb-4">
-                                                    <FormLabel className="text-base">Branches</FormLabel>
-                                                    <FormDescription>
-                                                        Select branches
-                                                    </FormDescription>
-                                                </div>
-                                                {
-                                                    branches.map((branch, idx) => (
-                                                        <FormField
-                                                            key={branch.commit.sha}
-                                                            control={form.control}
-                                                            name="branches"
-                                                            render={({ field }) => {
-                                                                // console.log(field)
-                                                                const _isChecked = field.value?.some(
-                                                                    (item) => item?.commit.sha === branch.commit.sha
-                                                                );
-                                                                return (
-                                                                    <FormItem
-                                                                        key={branch.commit.sha}
-                                                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                                                    >
-                                                                        <FormControl>
-                                                                            <Checkbox
-                                                                                checked={_isChecked}
-                                                                                onCheckedChange={(checked) => {
-                                                                                    handleBranchSelect(
-                                                                                        branch,
-                                                                                        field,
-                                                                                        checked as boolean
-                                                                                    )
-                                                                                }
-                                                                                }
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormLabel className="font-normal">
-                                                                            {branch.name} ({branch.commit.url.split('/')[5]})
-                                                                        </FormLabel>
-                                                                    </FormItem>
-                                                                );
-                                                            }}
-                                                        />
-                                                    ))
-                                                }
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <div className="flex justify-between">
-                                        <Button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-foreground hover:text-primary" onClick={previousStep}>
-                                            Previous: Choose Branch
-                                        </Button>
-                                        <Button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-foreground hover:text-primary" onClick={nextStep}>
-                                            Next: Choose Date Range
-                                        </Button>
-                                    </div>
-                                </div>
+                            {step < 3 && (
+                                <Button onClick={nextStep}>Next</Button>
                             )}
-
                             {step === 3 && (
-                                <div className="space-y-5">
-                                    <h2 className="text-3xl font-bold">3. Choose the Date Range</h2>
-                                    <p>Finally, specify the date range for the report. You can choose the period over which you want to analyze the repository's activity.</p>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="dateRange"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Date Range</FormLabel>
-                                                <DatePickerWithRange field={field as any} />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <div className="flex justify-between">
-                                        <Button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-foreground hover:text-primary" onClick={previousStep}>
-                                            Previous: Choose Date Range
-                                        </Button>
-                                        <Button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary-foreground hover:text-primary">
-                                            Generate Report
-                                        </Button>
-                                    </div>
-                                </div>
+                                // <Button type="submit">Generate Report</Button>
+                                <button onClick={(e) => console.log(form.getValues())}>click</button>
                             )}
-                        </form>
-                    </Form>
-                    {report && (
-                        <Textarea className="max-w-lg" rows={10} value={report} readOnly />
-                    )}
+                        </div>
+                    </form>
+                </Form>
 
-                </div>
-            </section>
+                {report && (
+                    <Textarea className="max-w-lg" rows={10} value={report} readOnly />
+                )}
 
-
-        </>
-
+            </div>
+        </section>
     );
 };
 
