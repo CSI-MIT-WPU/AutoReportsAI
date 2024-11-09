@@ -1,34 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import { z } from "zod";
+import React from "react";
+import { db } from "@/lib/firebase";
+import {Loader2} from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { getUserRepos } from "@/server/repo-queries";
-
-export const dynamic = "force-dynamic";
-import { z } from "zod";
-import { db } from "@/lib/firebase";
-import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/use-toast";
-import { Checkbox } from "@/components/ui/checkbox";
 import { generateReport } from "@/server/report-gen";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getRepoCommits } from "@/server/commit-queries";
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { DatePickerWithRange } from "@/app/dashboard/_components/range-picker";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormDescription,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
 } from "@/components/ui/form";
 import { RepoList } from "./_components/repos-list";
-import { Skeleton } from "@/components/ui/skeleton";
 import { BranchList } from "./_components/branches-list";
+import { getUserTemplates } from "@/server/template-queries";
+import { TemplateList } from "./_components/templates-list";
+
+export const Icons = {
+    spinner: Loader2,
+};  
+
+export const dynamic = "force-dynamic";
 
 const RepoSchema = z.object({
   id: z.string(),
@@ -47,8 +49,12 @@ const BranchSchema = z.object({
   protected: z.boolean(),
 });
 
-export type Repo = z.infer<typeof RepoSchema>;
-export type Branch = z.infer<typeof BranchSchema>;
+const TemplateSchema =  z.object({
+    id: z.string(),
+    title: z.string(),
+    headings: z.array(z.string()),
+    description: z.string()
+})
 
 const FormSchema = z.object({
   items: z.array(RepoSchema).refine((value) => value.some((item) => item), {
@@ -63,20 +69,27 @@ const FormSchema = z.object({
     .refine((value) => value.some((item) => item), {
       message: "You have to select at least one branch.",
     }),
+  template: z.string(),
 });
 
+export type Repo = z.infer<typeof RepoSchema>;
+export type Branch = z.infer<typeof BranchSchema>;
+export type Template = z.infer<typeof TemplateSchema>;
+
 const GenerateReport = () => {
+  const user = useAuth();
+  const [step, setStep] = React.useState<number>(1);
   const [repos, setRepos] = React.useState<Repo[]>([]);
-  const [reposLoading, setReposLoading] = React.useState<boolean>(false);
   const [report, setReport] = React.useState<string>("");
   const [branches, setBranches] = React.useState<Branch[]>([]);
-  const user = useAuth();
+  const [templates, setTemplates] = React.useState<Template[]>([]);
+  const [reposLoading, setReposLoading] = React.useState<boolean>(false);
+  const [reportGenerating, setReportGenerating] = React.useState<boolean>(false);
 
-  const storedRepos: any[] = [];
-  const [step, setStep] = useState(1);
   const nextStep = () => {
     setStep((prevStep) => prevStep + 1);
   };
+
   const previousStep = () => {
     setStep((prevStep) => prevStep - 1);
   };
@@ -90,63 +103,70 @@ const GenerateReport = () => {
         to: undefined,
       },
       branches: [],
+      template: ""
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    if (!user)
-      return toast({ title: "User not found", description: "User not found" });
-    const userDoc = await getDoc(doc(db, `users/${user.userId}`));
-    if (!userDoc.exists()) {
-      return new Response("User not found", { status: 404 });
-    }
-    const userData = userDoc.data();
-    const accessToken = userData.accessToken;
-    const username = userData.external_accounts[0].username;
-    console.log(data.items);
-    let commits: any[] = [];
-    await Promise.all(
-      data.items.map(async (repo: Repo, index) => {
-        try {
-          const repoCommits = await getRepoCommits(
-            repo.name,
-            repo.owner,
-            data.branches[index].name,
-            accessToken,
-            username,
-            data.dateRange.from.toISOString(),
-            data.dateRange.to?.toISOString() || new Date().toISOString(),
-            100
-          );
-          if (typeof repoCommits === "string") {
-            console.error(
-              `Error fetching commits for ${repo.name}: ${repoCommits}`
-            );
-            return [];
-          }
-          commits.push(repoCommits);
-        } catch (error) {
-          console.error(`Exception fetching commits for ${repo.name}:`, error);
-          return [];
-        }
-      })
-    );
-    const allCommits = commits.flat();
-    console.log(allCommits);
-    const feedback = await generateReport(
-      allCommits,
-      data.dateRange.from.toISOString(),
-      data.dateRange.to?.toISOString() || new Date().toISOString()
-    );
 
-    await addDoc(collection(db, `users/${user.userId}/reports`), {
-      feedback: feedback,
-      date: new Date(),
-      items: data.items,
-    });
+    if (!user) return toast({ title: "User not found", description: "User not found" });
 
-    setReport(feedback);
+    // const userDoc = await getDoc(doc(db, `users/${user.userId}`));
+    // if (!userDoc.exists()) return new Response("User not found", { status: 404 });
+    // const userData = userDoc.data();
+    // const accessToken = userData.accessToken;
+    // const username = userData.external_accounts[0].username;
+
+    // console.log(data.items);
+    // setReportGenerating(true);
+
+    // let commits: any[] = [];
+    // await Promise.all(
+    //   data.items.map(async (repo: Repo, index) => {
+    //     try {
+    //       const repoCommits = await getRepoCommits(
+    //         repo.name,
+    //         repo.owner,
+    //         data.branches[index].name,
+    //         accessToken,
+    //         username,
+    //         data.dateRange.from.toISOString(),
+    //         data.dateRange.to?.toISOString() || new Date().toISOString(),
+    //         100
+    //       );
+    //       if (typeof repoCommits === "string") {
+    //         console.error(
+    //           `Error fetching commits for ${repo.name}: ${repoCommits}`
+    //         );
+    //         return [];
+    //       }
+    //       commits.push(repoCommits);
+    //     } catch (error) {
+    //       console.error(`Exception fetching commits for ${repo.name}:`, error);
+    //       return [];
+    //     }
+    //   })
+    // );
+
+    // const allCommits = commits.flat();
+    // console.log(allCommits);
+    // const feedback = await generateReport(
+    //   allCommits,
+    //   data.dateRange.from.toISOString(),
+    //   data.dateRange.to?.toISOString() || new Date().toISOString()
+    // );
+
+    // await addDoc(collection(db, `users/${user.userId}/reports`), {
+    //   feedback: feedback,
+    //   date: new Date(),
+    //   items: data.items,
+    // });
+
+    // setReport(feedback);
+
+    console.log(data.template);
+    setReportGenerating(false);
 
     toast({
       title: "You submitted the following values:",
@@ -228,12 +248,26 @@ const GenerateReport = () => {
     }
   };
 
-  //THIS USE EFFECT CAUSED 52K requests to be sent:
+  const handleTemplateSelect = (
+    template: Template,
+    field: {
+        value: Template[];
+        onChange: (value: Template[]) => void;
+    },
+    checked: boolean
+  ) => {
+    console.log(field);
+    if (checked) {
+      field.onChange([...field.value, template]);
+    } else {
+      field.onChange(field.value.filter((item) => item.id !== template.id));
+    }
+  }
+
   React.useEffect(() => {
     if (!user) {
       return;
     }
-    console.log("hehe");
     setReposLoading(true);
     getUserRepos(user.userId as string)
       .then((data) => {
@@ -245,25 +279,16 @@ const GenerateReport = () => {
       .finally(() => {
         setReposLoading(false);
       });
+
+    getUserTemplates(user.userId as string)
+      .then((data) => {
+        setTemplates(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching templates: ", error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // i think the issue was that a new user object is passed on every render even if the user info is the same thus causing an infinite loop
-
-  //This useEffect is the correct one (i think)
-  React.useEffect(() => {
-    if (user.userId) {
-      setReposLoading(true);
-      getUserRepos(user.userId as string)
-        .then((data) => {
-          setRepos(data);
-          setReposLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching repositories:", error);
-          setReposLoading(false);
-        });
-    }
-  }, [user.userId]); // does not cause an infinite loop because userId stays the same
 
   return (
     <section className="w-full min-h-screen flex flex-col items-center justify-center bg-background p-10">
@@ -320,21 +345,34 @@ const GenerateReport = () => {
                 />
               </div>
             )}
+            {step === 4 && (
+              <div className="space-y-5">
+                <h2 className="text-3xl font-bold">4. Choose a report template</h2>
+                <p>
+                    Choose a template for your report.
+                </p>
+                <TemplateList form={form} templates={templates} handleTemplateSelect={handleTemplateSelect}/>
+              </div>
+            )}
             <div className="flex justify-between">
-              {step > 1 && <Button onClick={previousStep}>Previous</Button>}
-              {step < 3 && <Button onClick={nextStep}>Next</Button>}
-              {step === 3 && (
-                // <Button type="submit">Generate Report</Button>
-                <button onClick={(e) => console.log(form.getValues())}>
-                  click
-                </button>
+              {step > 1 && <Button onClick={previousStep} type="button">Previous</Button>}
+              {step < 4 && <Button onClick={nextStep} type="button">Next</Button>}
+              {step === 4 && (
+                <Button type="submit">Generate Report</Button>
               )}
             </div>
           </form>
         </Form>
-
+        {
+            reportGenerating ? (
+                <div className="flex flex-col justify-center items-center">
+                    <Icons.spinner className="h-16 w-16 animate-spin" />
+                    <p className="text-center">Generating your report...</p>
+                </div>
+            ) : null
+        }
         {report && (
-          <Textarea className="max-w-lg" rows={10} value={report} readOnly />
+          <Textarea className="w-full" rows={30} value={report} readOnly />
         )}
       </div>
     </section>
