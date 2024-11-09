@@ -21,10 +21,11 @@ import {
     FormItem,
     FormLabel,
 } from "@/components/ui/form";
+
 import { RepoList } from "./_components/repos-list";
 import { BranchList } from "./_components/branches-list";
-import { getUserTemplates } from "@/server/template-queries";
 import { TemplateList } from "./_components/templates-list";
+import { getUserTemplates } from "@/server/template-queries";
 
 export const Icons = {
     spinner: Loader2,
@@ -86,6 +87,7 @@ const GenerateReport = () => {
   const [reposLoading, setReposLoading] = React.useState<boolean>(false);
   const [reportGenerating, setReportGenerating] = React.useState<boolean>(false);
 
+
   const nextStep = () => {
     setStep((prevStep) => prevStep + 1);
   };
@@ -112,60 +114,59 @@ const GenerateReport = () => {
 
     if (!user) return toast({ title: "User not found", description: "User not found" });
 
-    // const userDoc = await getDoc(doc(db, `users/${user.userId}`));
-    // if (!userDoc.exists()) return new Response("User not found", { status: 404 });
-    // const userData = userDoc.data();
-    // const accessToken = userData.accessToken;
-    // const username = userData.external_accounts[0].username;
+    const userDoc = await getDoc(doc(db, `users/${user.userId}`));
+    if (!userDoc.exists()) return new Response("User not found", { status: 404 });
+    const userData = userDoc.data();
+    const accessToken = userData.accessToken;
+    const username = userData.external_accounts[0].username;
 
-    // console.log(data.items);
-    // setReportGenerating(true);
+    console.log(data.items);
+    setReportGenerating(true);
 
-    // let commits: any[] = [];
-    // await Promise.all(
-    //   data.items.map(async (repo: Repo, index) => {
-    //     try {
-    //       const repoCommits = await getRepoCommits(
-    //         repo.name,
-    //         repo.owner,
-    //         data.branches[index].name,
-    //         accessToken,
-    //         username,
-    //         data.dateRange.from.toISOString(),
-    //         data.dateRange.to?.toISOString() || new Date().toISOString(),
-    //         100
-    //       );
-    //       if (typeof repoCommits === "string") {
-    //         console.error(
-    //           `Error fetching commits for ${repo.name}: ${repoCommits}`
-    //         );
-    //         return [];
-    //       }
-    //       commits.push(repoCommits);
-    //     } catch (error) {
-    //       console.error(`Exception fetching commits for ${repo.name}:`, error);
-    //       return [];
-    //     }
-    //   })
-    // );
+    let commits: any[] = [];
+    await Promise.all(
+      data.items.map(async (repo: Repo, index) => {
+        try {
+          const repoCommits = await getRepoCommits(
+            repo.name,
+            repo.owner,
+            data.branches[index].name,
+            accessToken,
+            username,
+            data.dateRange.from.toISOString(),
+            data.dateRange.to?.toISOString() || new Date().toISOString(),
+            100
+          );
+          if (typeof repoCommits === "string") {
+            console.error(
+              `Error fetching commits for ${repo.name}: ${repoCommits}`
+            );
+            return [];
+          }
+          commits.push(repoCommits);
+        } catch (error) {
+          console.error(`Exception fetching commits for ${repo.name}:`, error);
+          return [];
+        }
+      })
+    );
 
-    // const allCommits = commits.flat();
-    // console.log(allCommits);
-    // const feedback = await generateReport(
-    //   allCommits,
-    //   data.dateRange.from.toISOString(),
-    //   data.dateRange.to?.toISOString() || new Date().toISOString()
-    // );
+    const allCommits = commits.flat();
+    console.log(allCommits);
+    const feedback = await generateReport(
+      allCommits,
+      data.dateRange.from.toISOString(),
+      data.dateRange.to?.toISOString() || new Date().toISOString(),
+      data.template.split('?')[1]
+    );
 
-    // await addDoc(collection(db, `users/${user.userId}/reports`), {
-    //   feedback: feedback,
-    //   date: new Date(),
-    //   items: data.items,
-    // });
+    await addDoc(collection(db, `users/${user.userId}/reports`), {
+      feedback: feedback,
+      date: new Date(),
+      items: data.items,
+    });
 
-    // setReport(feedback);
-
-    console.log(data.template);
+    setReport(feedback);
     setReportGenerating(false);
 
     toast({
