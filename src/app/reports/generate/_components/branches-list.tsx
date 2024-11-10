@@ -1,13 +1,13 @@
 "use client";
 
-import { z } from 'zod'
-import React from 'react'
-import { Repo } from '../page'
-import { Checkbox } from '@/components/ui/checkbox'
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { doc, getDoc } from 'firebase/firestore';
-import { useAuth } from '@clerk/nextjs';
+import { z } from 'zod';
+import React from 'react';
+import { Repo } from '../page';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@clerk/nextjs';
+import { doc, getDoc } from 'firebase/firestore';
+import { Checkbox } from '@/components/ui/checkbox';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
 const CommitSchema = z.object({
     sha: z.string(),

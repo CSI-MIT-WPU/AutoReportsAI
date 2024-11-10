@@ -84,7 +84,6 @@ const GenerateReport = () => {
   const [step, setStep] = React.useState<number>(1);
   const [repos, setRepos] = React.useState<Repo[]>([]);
   const [report, setReport] = React.useState<string>("");
-  const [branches, setBranches] = React.useState<Branch[]>([]);
   const [templates, setTemplates] = React.useState<Template[]>([]);
   const [selectedRepos, setSelectedRepos] = React.useState<Repo[]>([]);
   const [reposLoading, setReposLoading] = React.useState<boolean>(false);
