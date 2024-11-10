@@ -1,7 +1,13 @@
+"use client";
+
 import { z } from 'zod'
 import React from 'react'
-import { Checkbox } from '@/components/ui/checkbox';
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Repo } from '../page'
+import { Checkbox } from '@/components/ui/checkbox'
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '@clerk/nextjs';
+import { db } from '@/lib/firebase';
 
 const CommitSchema = z.object({
     sha: z.string(),
@@ -18,11 +24,72 @@ export type Branch = z.infer<typeof BranchSchema>;
 
 interface BranchListProps {
     form: any;
-    branches: Branch[];
+    selectedRepos: Repo[];
     handleBranchSelect: (branch: Branch, field: any, checked: boolean) => void;
 }
 
-export const BranchList: React.FC<BranchListProps> = ({ form, branches, handleBranchSelect }) => {
+export const BranchList: React.FC<BranchListProps> = ({ form, selectedRepos, handleBranchSelect }) => {
+
+    const user = useAuth();
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const [branches, setBranches] = React.useState<Branch[]>([]);
+
+    async function getBranches(repo: Repo): Promise<any> {
+        const userDoc = await getDoc(doc(db, `users/${user?.userId}`));
+        if (!userDoc.exists()) {
+            return new Response("User not found", { status: 404 });
+        }
+        const userData = userDoc.data();
+        const accessToken = userData.accessToken;
+        const username = userData.external_accounts[0].username;
+
+        const response = await fetch(
+            `https://api.github.com/repos/${repo.owner}/${repo.name}/branches`,
+            {
+                headers: {
+                    Authorization: `token ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            return new Response(`GitHub API Error: ${errorText}`, {
+                status: response.status,
+            });
+        }
+
+        const branches = await response.json();
+        console.log(branches);
+        return branches;
+    }
+
+    React.useEffect(() => {
+        const fetchBranches = async () => {
+            setLoading(true);
+            const branchLists = await Promise.all(
+                selectedRepos.map(async (repo) => {
+                    const data = await getBranches(repo);
+                    return data?.map((branch: any) => ({
+                        name: branch.name,
+                        commit: {
+                            sha: branch.commit.sha,
+                            url: branch.commit.url,
+                        },
+                        protected: branch.protected,
+                    })) || [];
+                })
+            );
+            const allBranches = branchLists.flat();
+            setBranches(allBranches);
+            setLoading(false);
+        };
+        
+        fetchBranches();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <div className="max-h-[500px] overflow-y-auto">
             <FormField
@@ -30,14 +97,13 @@ export const BranchList: React.FC<BranchListProps> = ({ form, branches, handleBr
                 name="branches"
                 render={() => (
                     <FormItem>
-                        {
+                        {                            
                             branches.map((branch, idx) => (
                                 <FormField
                                     key={branch.commit.sha}
                                     control={form.control}
                                     name="branches"
                                     render={({ field }) => {
-                                        // console.log(field)
                                         const _isChecked = field.value?.some(
                                             (item: any) => item?.commit.sha === branch.commit.sha
                                         );

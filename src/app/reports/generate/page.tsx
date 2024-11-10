@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import {Loader2} from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
@@ -79,14 +80,15 @@ export type Template = z.infer<typeof TemplateSchema>;
 
 const GenerateReport = () => {
   const user = useAuth();
+  const router = useRouter();
   const [step, setStep] = React.useState<number>(1);
   const [repos, setRepos] = React.useState<Repo[]>([]);
   const [report, setReport] = React.useState<string>("");
   const [branches, setBranches] = React.useState<Branch[]>([]);
   const [templates, setTemplates] = React.useState<Template[]>([]);
+  const [selectedRepos, setSelectedRepos] = React.useState<Repo[]>([]);
   const [reposLoading, setReposLoading] = React.useState<boolean>(false);
   const [reportGenerating, setReportGenerating] = React.useState<boolean>(false);
-
 
   const nextStep = () => {
     setStep((prevStep) => prevStep + 1);
@@ -165,7 +167,8 @@ const GenerateReport = () => {
       date: new Date(),
       items: data.items,
     });
-
+ 
+    router.push("/reports");
     setReport(feedback);
     setReportGenerating(false);
 
@@ -179,38 +182,6 @@ const GenerateReport = () => {
     });
   }
 
-  async function getBranches(repo: Repo): Promise<any> {
-    console.log("getting branches");
-    const userDoc = await getDoc(doc(db, `users/${user?.userId}`));
-    if (!userDoc.exists()) {
-      return new Response("User not found", { status: 404 });
-    }
-    const userData = userDoc.data();
-    const accessToken = userData.accessToken;
-    const username = userData.external_accounts[0].username;
-
-    const response = await fetch(
-      `https://api.github.com/repos/${repo.owner}/${repo.name}/branches`,
-      {
-        headers: {
-          Authorization: `token ${accessToken}`,
-          Accept: "application/vnd.github+json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      return new Response(`GitHub API Error: ${errorText}`, {
-        status: response.status,
-      });
-    }
-
-    const branches = await response.json();
-    console.log(branches);
-    return branches;
-  }
-
   const handleRepoSelect = (
     repo: Repo,
     field: {
@@ -221,12 +192,7 @@ const GenerateReport = () => {
   ) => {
     console.log(field);
     if (checked) {
-      getBranches(repo).then((_branches) => {
-        console.log(_branches);
-        _branches.map((branch: Branch) => {
-          setBranches((prevBranches) => [...prevBranches, branch]);
-        });
-      });
+      setSelectedRepos([...selectedRepos, repo]);
       field.onChange([...field.value, repo]);
     } else {
       field.onChange(field.value.filter((item) => item.id !== repo.id));
@@ -323,7 +289,7 @@ const GenerateReport = () => {
                 </p>
                 <BranchList
                   form={form}
-                  branches={branches}
+                  selectedRepos={selectedRepos}
                   handleBranchSelect={handleBranchSelect}
                 />
               </div>
