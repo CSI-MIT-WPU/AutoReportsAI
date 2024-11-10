@@ -8,7 +8,6 @@ export async function POST(req: Request) {
   try {
     // Assuming you have a way to get the userId from the request (e.g., Clerk session)
     const userId = auth().userId;
-    console.log("userId", userId);
     if (!userId) {
       return new Response("User ID is required", { status: 400 });
     }
@@ -24,7 +23,6 @@ export async function POST(req: Request) {
     const accessToken = userDoc.data().accessToken;
 
     // 2. Fetch Repositories from GitHub API
-    console.log(userId)
     const githubApiResponse = await fetch(
       "https://api.github.com/user/repos?sort=pushed",
       {
@@ -74,25 +72,6 @@ export async function POST(req: Request) {
     });
 
     await batch.commit();
-
-
-    // await Promise.all(
-    //   githubRepos.map(async (repo: any) => {
-    //     return setDoc(
-    //       // Return the promise from setDoc
-    //       doc(db, `users/${userId}/repositories/${repo.id}`),
-    //       {
-    //         id: repo.id,
-    //         name: repo.name,
-    //         owner: repo.owner.login,
-    //         private: repo.private,
-    //         userId: userId,
-    //         ownerAvatar: repo.owner.avatar_url,
-    //       },
-    //       { merge: true }
-    //     );
-    //   })
-    // );
 
     console.log("All repositories saved to Firestore!");
     return new Response(JSON.stringify(githubRepos), {
