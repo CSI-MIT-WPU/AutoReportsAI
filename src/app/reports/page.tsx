@@ -40,7 +40,8 @@ const Reports = () => {
           setLoading(false);
         });
     }
-  }, [isSignedIn, userId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ResizablePanelGroup
