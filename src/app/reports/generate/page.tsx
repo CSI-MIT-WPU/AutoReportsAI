@@ -3,7 +3,7 @@
 import { z } from "zod";
 import React from "react";
 import { db } from "@/lib/firebase";
-import {Loader2} from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -17,10 +17,10 @@ import { getRepoCommits } from "@/server/commit-queries";
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { DatePickerWithRange } from "@/app/dashboard/_components/range-picker";
 import {
-    Form,
-    FormField,
-    FormItem,
-    FormLabel,
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
 } from "@/components/ui/form";
 
 import { RepoList } from "./_components/repos-list";
@@ -28,9 +28,11 @@ import { BranchList } from "./_components/branches-list";
 import { TemplateList } from "./_components/templates-list";
 import { getUserTemplates } from "@/server/template-queries";
 
-export const Icons = {
-    spinner: Loader2,
-};  
+const Icons: {
+  spinner: React.FC<React.SVGProps<SVGSVGElement>>;
+} = {
+  spinner: Loader2,
+};
 
 export const dynamic = "force-dynamic";
 
@@ -51,11 +53,11 @@ const BranchSchema = z.object({
   protected: z.boolean(),
 });
 
-const TemplateSchema =  z.object({
-    id: z.string(),
-    title: z.string(),
-    headings: z.array(z.string()),
-    description: z.string()
+const TemplateSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  headings: z.array(z.string()),
+  description: z.string()
 })
 
 const FormSchema = z.object({
@@ -166,7 +168,7 @@ const GenerateReport = () => {
       date: new Date(),
       items: data.items,
     });
- 
+
     router.push("/reports");
     setReport(feedback);
     setReportGenerating(false);
@@ -217,8 +219,8 @@ const GenerateReport = () => {
   const handleTemplateSelect = (
     template: Template,
     field: {
-        value: Template[];
-        onChange: (value: Template[]) => void;
+      value: Template[];
+      onChange: (value: Template[]) => void;
     },
     checked: boolean
   ) => {
@@ -315,9 +317,9 @@ const GenerateReport = () => {
               <div className="space-y-5">
                 <h2 className="text-3xl font-bold">4. Choose a report template</h2>
                 <p>
-                    Choose a template for your report.
+                  Choose a template for your report.
                 </p>
-                <TemplateList form={form} templates={templates} handleTemplateSelect={handleTemplateSelect}/>
+                <TemplateList form={form} templates={templates} handleTemplateSelect={handleTemplateSelect} />
               </div>
             )}
             <div className="flex justify-between">
@@ -330,12 +332,12 @@ const GenerateReport = () => {
           </form>
         </Form>
         {
-            reportGenerating ? (
-                <div className="flex flex-col justify-center items-center">
-                    <Icons.spinner className="h-16 w-16 animate-spin" />
-                    <p className="text-center">Generating your report...</p>
-                </div>
-            ) : null
+          reportGenerating ? (
+            <div className="flex flex-col justify-center items-center">
+              <Icons.spinner className="h-16 w-16 animate-spin" />
+              <p className="text-center">Generating your report...</p>
+            </div>
+          ) : null
         }
         {report && (
           <Textarea className="w-full" rows={30} value={report} readOnly />
