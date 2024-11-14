@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { TemplateList } from './_components/templates-list';
 import { TemplateViewer } from './_components/templates-viewer';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export interface CustomTemplate {
   title: string;
@@ -72,15 +73,17 @@ export default function Templates() {
             <Link href="/templates/create-template">Create New Template</Link>
           </Button>
         </div>
-        <TemplateList
-          customTemplates={customTemplates}
-          selectedTemplate={selectedTemplate || customTemplates[0]}
-          setSelectedTemplate={setSelectedTemplate}
-          loading={loading}
-          setOpen={setOpen}
-          open={open}
-          searchTerm={serachTerm}
-        />
+        <ScrollArea>
+          <TemplateList
+            customTemplates={customTemplates}
+            selectedTemplate={selectedTemplate || customTemplates[0]}
+            setSelectedTemplate={setSelectedTemplate}
+            loading={loading}
+            setOpen={setOpen}
+            open={open}
+            searchTerm={serachTerm}
+          />
+        </ScrollArea>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel
