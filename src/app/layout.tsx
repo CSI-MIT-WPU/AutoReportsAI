@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
-import Navbar from "./dashboard/_components/navbar";
+import Navbar from "./_components/loggedInNavbar";
 
 const fontSans = FontSans({
   subsets: ["latin"],

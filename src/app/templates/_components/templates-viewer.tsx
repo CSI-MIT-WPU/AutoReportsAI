@@ -150,7 +150,7 @@ export const TemplateViewer: React.FC<{
                                 rx="8"
                                 fill="currentColor"
                                 className="fill-white dark:fill-neutral-800"
-                                shape-rendering="crispEdges"
+                                shapeRendering="crispEdges"
                             />
                             <rect
                                 x="12.5"
@@ -160,7 +160,7 @@ export const TemplateViewer: React.FC<{
                                 rx="7.5"
                                 stroke="currentColor"
                                 className="stroke-gray-100 dark:stroke-neutral-700/60"
-                                shape-rendering="crispEdges"
+                                shapeRendering="crispEdges"
                             />
                             <rect
                                 x="20"
@@ -200,7 +200,7 @@ export const TemplateViewer: React.FC<{
                                 filterUnits="userSpaceOnUse"
                                 color-interpolation-filters="sRGB"
                             >
-                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
                                 <feColorMatrix
                                     in="SourceAlpha"
                                     type="matrix"
