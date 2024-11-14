@@ -7,7 +7,6 @@ import { getUserRepos } from "@/server/repo-queries";
 import ReportsCard from "./_components/reports-card";
 import { getUserReports } from "@/server/reports-queries";
 import { FolderGit2, GitBranch, GitCommit, GitFork } from "lucide-react";
-import Navbar from "./_components/navbar";
 
 export const dynamic = "force-dynamic";
 

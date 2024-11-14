@@ -2,6 +2,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const getUserRepos = async (userId: string) => {
+  console.log("FETCHING USER REPOS")
   let repos = [];
   try {
     const response = await getDocs(

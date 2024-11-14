@@ -73,7 +73,9 @@ export default function Navbar() {
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="ml-auto flex-1 sm:flex-initial">
-          <Button>Generate Report</Button>
+          <Button>
+            <Link href="/reports/generate">Generate Report</Link>
+          </Button>
         </div>
         <UserButton />
       </div>

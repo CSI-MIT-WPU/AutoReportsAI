@@ -3,14 +3,9 @@ import { ratelimit } from "@/lib/ratelimit";
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 
-const generateReport = async (commits: any[], from: string, to: string) => {
+const generateReport = async (commits: any[], from: string, to: string, headings: string) => {
   const prompt = `You are an AI report writer. You will be given a list of commits and you will need to write a report on the commits. These commits are from a Github repository and between the dates ${from} and ${to}. The report should be in markdown format. The report should be at least 100 words long. The report should be written in a professional tone. Do not include any other information in the report. Do not include any emojis. Do not include any hashtags. Do not include any links. Do not include any images. Do not include any code. Do not include any quotes. Do not include any emojis. Do not include any hashtags. Do not include any links. Do not include any images. Do not include any code. Do not include any quotes. The report should be follow the following format:
-  Title: 
-  Date: 
-  Summary: 
-  Completed: 
-  In progress:  
-  Outcomes:  
+  ${headings}
   
   Commits: ${commits
     .map((commit: any) => `- ${commit.date} -> ${commit.message}`)

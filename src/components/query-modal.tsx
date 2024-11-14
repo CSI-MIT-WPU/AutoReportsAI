@@ -3,14 +3,6 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -23,7 +15,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAuth } from "@clerk/nextjs";
-import DatePicker from "@/components/ui/date-picker";
 // import emailjs from "@emailjs/browser";
 import { Textarea } from "./ui/textarea";
 import { HelpCircle } from "lucide-react";
@@ -47,30 +38,6 @@ export default function QueryModal() {
     const serviceId = process.env.NEXT_PUBLIC_SERVICE_ID as string;
     const templateId = process.env.NEXT_PUBLIC_TEMPLATE_ID as string;
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_KEY as string;
-    // emailjs
-    //   .send(
-    //     serviceId,
-    //     templateId,
-    //     { name, email, description },
-    //     {
-    //       publicKey: publicKey,
-    //     }
-    //   )
-    //   .then(
-    //     () => {
-    //       toast.dismiss(id);
-    //       toast.success("Message sent successfully");
-    //       closeDialog();
-    //       setName("");
-    //       setEmail("");
-    //       setDescription("");
-    //     },
-    //     (error) => {
-    //       console.log(error);
-    //       toast.dismiss(id);
-    //       toast.error("Error sending message");
-    //     }
-    //   );
   };
 
   return (
