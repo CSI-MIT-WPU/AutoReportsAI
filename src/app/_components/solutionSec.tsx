@@ -1,18 +1,19 @@
 "use client";
+
+import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
-import { LeafIcon, MonitorIcon, PlugIcon, SlidersIcon } from "lucide-react";
-import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
+import Ripple from "@/components/magicui/ripple";
 import { motion, useInView } from "framer-motion";
 import DotPattern from "@/components/magicui/dot-pattern";
-import { cn } from "@/lib/utils";
-import Ripple from "@/components/magicui/ripple";
+import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
+import { TargetIcon, MonitorIcon, UserCheck, TimerIcon } from "lucide-react";
 
 const solutions = [
   {
-    Icon: SlidersIcon,
-    name: "Automated Control",
+    Icon: TimerIcon,
+    name: "Reduced Time and Effort",
     description:
-      "Hydrobud's IoT device monitors key metrics like water pH, temperature, and light, automatically adjusting conditions in real time to ensure optimal growth, freeing you from manual labor.",
+      "Automating the process eliminates the need to manually review commits, significantly saving time and effort. Spend less time on reporting and more time on coding.",
     href: "/",
     cta: "Learn more",
     background: (
@@ -25,10 +26,10 @@ const solutions = [
     className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
   },
   {
-    Icon: PlugIcon,
-    name: "Easy Setup",
+    Icon: UserCheck,
+    name: "User friendly",
     description:
-      "Our device is designed for simplicity. With an easy plug-and-play setup, even beginners can get started without any prior knowledge of hydroponics.",
+      "Our platform is designed to be user-friendly, with a simple and intuitive interface that makes it easy to generate detailed reports with just a few clicks.",
     href: "/",
     cta: "Learn more",
     background: (
@@ -40,10 +41,10 @@ const solutions = [
     className: "lg:col-start-1 lg:col-end-3 lg:row-start-3 lg:row-end-4",
   },
   {
-    Icon: LeafIcon,
-    name: "Consistent Growth",
+    Icon: TargetIcon,
+    name: "Improved Accuracy",
     description:
-      "By maintaining ideal conditions, Hydrobud promotes faster, more consistent, and healthier growth, ensuring better yields and quality produce with less effort.",
+      "The app ensures that all relevant commits are included, reducing the risk of errors or omissions in the report. Get a comprehensive overview of your contributions.",
     href: "/",
     cta: "Learn more",
     background: (
@@ -59,7 +60,7 @@ const solutions = [
     Icon: MonitorIcon,
     name: "Smart Dashboard",
     description:
-      "Our user-friendly dashboard lets you track the health and progress of your plants in real time. Easily adjust settings, monitor metrics, and control your system remotely.",
+      "Our platform provides a smart dashboard that displays all the relevant information in one place, making it easy to track your repos and generated reports.",
     href: "/",
     cta: "Learn more",
     background: (
@@ -78,15 +79,15 @@ function SolutionSec() {
   const isInView = useInView(ref, { once: true }); // Animates once when it comes into view
 
   return (
-    <div className="w-full bg-neutral-100 py-16">
+    <div className="w-full py-16 dark:text-white">
       <div className="w-full flex flex-col items-center justify-center space-y-5">
-        <p className="dark:text-black">SOLUTIONS</p>
-        <h2 className="text-5xl font-semibold dark:text-black">
-          Empower Your Business with AI Workflows
+        <p className="dark:text-white">SOLUTIONS</p>
+        <h2 className="text-5xl font-semibold dark:text-white">
+          Generate Your Reports Using AutoReportsAI
         </h2>
-        <p className="text-base font-medium text-center leading-6 tracking-wide text-slate-600 max-w-2xl">
+        <p className="text-base font-medium text-center leading-6 tracking-wide text-slate-500 max-w-2xl">
           Generic AI tools suffice. Our platform is purpose-built to provide
-          exceptional AI-driven solutions for your unique business needs.
+          exceptional AI-driven reports for a comprehensive and detailed report.
         </p>
       </div>
 
@@ -105,9 +106,9 @@ function SolutionSec() {
           animate={isInView ? { opacity: 1, y: 0 } : {}} // Only animate if in view
           transition={{ delay: 0.5, duration: 1.5, type: "spring" }}
         >
-          <BentoGrid className="lg:grid-rows-3 ">
+          <BentoGrid className="lg:grid-rows-3">
             {solutions.map((feature) => (
-              <BentoCard key={feature.name} {...feature} />
+              <BentoCard key={feature.name} {...feature}/>
             ))}
           </BentoGrid>
         </motion.div>

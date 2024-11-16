@@ -1,10 +1,9 @@
 "use client";
 import React from "react";
-import BlurFade from "@/components/magicui/blur-fade";
-import { Button } from "@/components/ui/button";
-import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
+import BlurFade from "@/components/magicui/blur-fade";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
 
 const heroSection = () => {
   return (
@@ -29,15 +28,7 @@ const heroSection = () => {
       </BlurFade>
       <BlurFade delay={0.25 * 2} inView>
         <span className="text-slate-500 text-2xl tracking-tighter ">
-          No matter what problem you have, our AI can help you solve it.
-        </span>
-      </BlurFade>
-      <BlurFade delay={0.25 * 3} inView>
-        <Button>Get started for free</Button>
-      </BlurFade>
-      <BlurFade delay={0.25 * 2} inView>
-        <span className="text-slate-500 text-xl tracking-tighter ">
-          7 day free trial. No credit card required.
+          Generate reports within seconds with AutoReportsAI.
         </span>
       </BlurFade>
     </section>

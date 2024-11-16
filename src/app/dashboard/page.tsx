@@ -6,7 +6,7 @@ import { getUserRepos } from "@/server/repo-queries";
 import ReportsCard from "./_components/reports-card";
 import { getUserReports } from "@/server/reports-queries";
 import { getUserTemplates } from "@/server/template-queries";
-import { ClipboardMinus, Clock, FolderGit2, GitBranch, GitCommit, GitFork, LayoutPanelTop } from "lucide-react";
+import { ClipboardMinus, Clock, FolderGit2, LayoutPanelTop } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +16,7 @@ const Dashboard = async () => {
   const storedReports = await getUserReports(user?.userId as string);
   const storedTemplates = await getUserTemplates(user?.userId as string);
 
-  // Temporary data for the cards
-  const tempData = [
+  const cardData = [
     {
       cardTitle: "Total Repositories",
       cardMain: `${storedRepos.length} Repositories`,
@@ -54,7 +53,7 @@ const Dashboard = async () => {
     <>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          {tempData.map((data, index) => {
+          {cardData.map((data, index) => {
             return <InfoCard key={index} {...data} />;
           })}
         </div>

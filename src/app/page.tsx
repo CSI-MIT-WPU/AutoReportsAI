@@ -1,54 +1,23 @@
 "use client";
-import type { Metadata } from "next";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import Link from "next/link";
-import HeroVid from "@/app/_components/heroVid";
-import LeadingTeams from "./_components/leadingTeams";
-import ProblemSec from "./_components/problemSec";
-import SolutionSec from "./_components/solutionSec";
-import HowItWorks from "./_components/howItWorks";
-import TestimonialSec from "./_components/TestimonialSec";
-import { FAQS } from "./_components/faqs";
-import FreeTrial from "./_components/freeTrial";
+
+import FAQS from "./_components/faqs";
 import Footer from "./_components/footer";
-import Blog from "./_components/blog";
+import HeroVid from "@/app/_components/heroVid";
+import ProblemSec from "./_components/problemSec";
+import HowItWorks from "./_components/howItWorks";
 import HeroSection from "./_components/HeroSection";
-import Navbar from "./_components/navbar";
+import SolutionSec from "./_components/solutionSec";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      <Navbar />
-
-      <section className="w-full flex flex-col items-center justify-center space-y-7 pt-20">
-        <ModeToggle />
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-
-        <SignedIn>
-          <div className="flex space-x-4">
-            <Link href="/dashboard">
-              <Button>Dashboard</Button>
-            </Link>
-            <Link href="/reports">
-              <Button>Reports</Button>
-            </Link>
-          </div>
-          <UserButton />
-        </SignedIn>
+      <section className="w-full flex flex-col items-center justify-center space-y-7">
         <HeroSection />
         <HeroVid />
-        <LeadingTeams />
         <ProblemSec />
         <SolutionSec />
         <HowItWorks />
-        <TestimonialSec />
         <FAQS />
-        <Blog />
-        <FreeTrial />
         <Footer />
       </section>
     </main>
