@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import BlurFade from "@/components/magicui/blur-fade";
+import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 
 function HeroVid() {
   return (
