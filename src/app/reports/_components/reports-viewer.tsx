@@ -15,7 +15,9 @@ export const ReportViewer: React.FC<{
                     <div className="flex flex-1 flex-col p-4 space-y-4">
                         <div>
                             <div className="font-semibold text-center text-2xl">
-                                {report.id}
+                            {
+                                `Report between ${new Date(report.dateRange.from.seconds * 1000).toLocaleDateString("en-GB")} and ${new Date(report.dateRange.to.seconds * 1000).toLocaleDateString("en-GB")}`
+                            }
                             </div>
                             <Separator className="my-2" />
                         </div>
@@ -24,6 +26,14 @@ export const ReportViewer: React.FC<{
                                 <div className="text-sm font-extrabold">Created On:</div>
                                 <div className="text-sm text-gray-300 dark:text-neutral-300">
                                     {new Date(report.date.seconds * 1000).toLocaleDateString("en-GB")}
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <div className="text-sm font-extrabold">Report generated for following repositories:</div>
+                                <div className="text-sm text-gray-300 dark:text-neutral-300">
+                                    {report.items.map((item, index) => (
+                                        <div key={index}>{item.name} by {item.owner}</div>
+                                    ))}
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
@@ -195,7 +205,7 @@ export const ReportViewer: React.FC<{
                                 width="178"
                                 height="64"
                                 filterUnits="userSpaceOnUse"
-                                color-interpolation-filters="sRGB"
+                                colorInterpolationFilters="sRGB"
                             >
                                 <feFlood floodOpacity="0" result="BackgroundImageFix" />
                                 <feColorMatrix

@@ -167,6 +167,7 @@ const GenerateReport = () => {
       feedback: feedback,
       date: new Date(),
       items: data.items,
+      dateRange: data.dateRange
     });
 
     router.push("/reports");

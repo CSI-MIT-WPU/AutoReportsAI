@@ -11,10 +11,20 @@ import { getUserReports } from "@/server/reports-queries";
 import { ReportViewer } from "./_components/reports-viewer";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
+interface RepoItem{
+  name: string,
+  owner: string,
+};
+
 export interface Report {
   id: string,
   date: Timestamp,
   feedback: string,
+  items: RepoItem[],
+  dateRange: {
+    from: Timestamp,
+    to: Timestamp
+  }
 }
 
 const Reports = () => {
@@ -32,6 +42,7 @@ const Reports = () => {
       getUserReports(userId)
         .then((data) => {
           setReports(data);
+          console.log(data)
         })
         .catch((error) => {
           console.error(error);

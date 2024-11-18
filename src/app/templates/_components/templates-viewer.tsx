@@ -198,7 +198,7 @@ export const TemplateViewer: React.FC<{
                                 width="178"
                                 height="64"
                                 filterUnits="userSpaceOnUse"
-                                color-interpolation-filters="sRGB"
+                                colorInterpolationFilters="sRGB"
                             >
                                 <feFlood floodOpacity="0" result="BackgroundImageFix" />
                                 <feColorMatrix

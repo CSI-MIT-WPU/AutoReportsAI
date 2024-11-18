@@ -9,7 +9,9 @@ const getUserReports = async (userId: string) => {
       ...doc.data(),
       id: doc.id.toString(),
       date: doc.data().date,
-      feedback: doc.data().feedback
+      feedback: doc.data().feedback,
+      dateRange: doc.data().dateRange,
+      items: doc.data().items,
     }));
   } catch (error) {
     console.error("Error fetching reports:", error);

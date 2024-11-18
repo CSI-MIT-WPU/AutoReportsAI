@@ -60,11 +60,18 @@ export const ReportsList: React.FC<{
                                         }}
                                     >
                                         <div>
-                                            <div className="text-lg font-bold">{"Report on " + new Date(report.date.seconds * 1000).toLocaleDateString("en-GB")}</div>
-                                            <div className="text-sm">{"report id: " + report.id}</div>
+                                        <div className="text-lg font-bold h-10 text-ellipsis">
+                                            {
+                                                report.items.length > 1
+                                                    ? `${report.items[0].name} and ${report.items.length - 1} more...`
+                                                    : `${report.items[0].name}`
+                                            }
+                                        </div>
+
+                                            <div className="text-sm">{`Report from ${new Date(report.dateRange.from.seconds * 1000).toLocaleDateString("en-GB")} to ${new Date(report.dateRange.to.seconds * 1000).toLocaleDateString("en-GB")}`}</div>
                                         </div>
                                         <div className="text-xs text-muted-foreground">
-
+                                            {new Date(report.date.seconds * 1000).toLocaleDateString("en-GB")}
                                         </div>
                                     </button>
                                 );
