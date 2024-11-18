@@ -43,7 +43,7 @@ export const ReportsList: React.FC<{
                     ) : (
                         reports
                             .filter(report =>
-                                searchTerm === "" || new Date(report.date.seconds * 1000).toLocaleDateString("en-GB").includes(searchTerm.toLowerCase())
+                                searchTerm === "" || report.items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
                             )
                             .map((report, index) => {
                                 if (!report.id) return null;
