@@ -97,8 +97,36 @@ const GenerateReport = () => {
         React.useState<boolean>(false);
 
     const nextStep = () => {
+        if (step === 1) {
+            if (!form.watch("items").length) {
+                return toast({
+                    variant: "destructive",
+                    title: "No Repository Selected",
+                    description: "Please select at least one repository.",
+                });
+            }
+        } else if (step === 2) {
+            if (!form.watch("branches").length) {
+                return toast({
+                    variant: "destructive",
+                    title: "No Branch Selected",
+                    description: "Please select at least one branch.",
+                });
+            }
+        } else if (step === 3) {
+            const { from, to } = form.watch("dateRange");
+            if (!from || !to) {
+                return toast({
+                    variant: "destructive",
+                    title: "Invalid Date Range",
+                    description: "Please select a valid date range.",
+                });
+            }
+        }
+
         setStep((prevStep) => prevStep + 1);
     };
+
 
     const previousStep = () => {
         setStep((prevStep) => prevStep - 1);
@@ -181,12 +209,8 @@ const GenerateReport = () => {
         setReportGenerating(false);
 
         toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
+            title: "Success",
+            description: "Report generated successfully.",
         });
     }
 
@@ -387,14 +411,14 @@ const GenerateReport = () => {
                         )}
                         <div className="flex justify-between">
                             {step > 1 && (
-                                    <Button onClick={previousStep} type="button">
-                                        Previous
-                                    </Button>
+                                <Button onClick={previousStep} type="button">
+                                    Previous
+                                </Button>
                             )}
                             {step < 4 && (
-                                    <Button onClick={nextStep} type="button">
-                                        Next
-                                    </Button>
+                                <Button onClick={nextStep} type="button">
+                                    Next
+                                </Button>
                             )}
                             {step === 4 && <Button type="submit">Generate Report</Button>}
                         </div>
