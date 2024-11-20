@@ -1,8 +1,24 @@
 "use client";
 
+import getAsset from "@/server/get-asset";
 import React from "react";
 
 function HowItWorks() {
+
+  const [imgURL, setImgURL] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchThumbnail = async () => {
+      const url = await getAsset("assets/dashboard.png");
+      console.log(url)
+      return url;
+      
+    };
+    fetchThumbnail().then((url) => {
+      setImgURL(url);
+    });
+  }, []);
+
   return (
     <div className="py-16 space-y-16 px-40 ">
       <div className="text-center space-y-3">
@@ -105,7 +121,7 @@ function HowItWorks() {
 
         <div className="col-span-2">
           <img
-            src="/dashboard.png"
+            src={imgURL || ""}
             alt=""
             className=" hover:scale-105 aspect-auto h-full w-full rounded-xl border border-neutral-300/50 object-cover object-left-top p-1 shadow-lg transition-all duration-100"
           />
