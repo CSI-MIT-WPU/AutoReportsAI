@@ -59,7 +59,7 @@ const Dashboard = async () => {
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <ReposCard repos={storedRepos.reverse()} />
-          <ReportsCard reports={storedReports.reverse().slice(0, 5)} />
+          <ReportsCard reports={storedReports.sort((a, b) => b.date.toMillis() - a.date.toMillis()).slice(0, 5)} />
         </div>
       </main>
     </>

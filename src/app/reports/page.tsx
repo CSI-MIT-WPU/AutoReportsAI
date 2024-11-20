@@ -81,7 +81,7 @@ const Reports = () => {
         </div>
         <ScrollArea>
           <ReportsList
-            reports={reports}
+            reports={reports.sort((a, b) => b.date.toMillis() - a.date.toMillis())}
             selectedReport={selectedReport}
             setSelectedReport={setSelectedReport}
             loading={loading}

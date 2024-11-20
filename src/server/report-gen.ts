@@ -35,7 +35,6 @@ const generateReport = async (commits: any[], from: string, to: string, headings
 
     const response = await axios(options);
     const feedback = response.data.content.trim();
-    console.log("Feedback:", feedback);
 
     return feedback;
   } catch (err: any) {

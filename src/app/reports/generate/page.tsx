@@ -3,8 +3,9 @@
 import { z } from "zod";
 import React from "react";
 import { db } from "@/lib/firebase";
-import {Loader2} from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from "@clerk/nextjs";
+import { RotateCw } from 'lucide-react';
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,36 +14,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { getUserRepos } from "@/server/repo-queries";
 import { generateReport } from "@/server/report-gen";
 import { zodResolver } from "@hookform/resolvers/zod";
+import BlurFade from "@/components/magicui/blur-fade";
 import { getRepoCommits } from "@/server/commit-queries";
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { DatePickerWithRange } from "@/app/dashboard/_components/range-picker";
 import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
 } from "@/components/ui/form";
-
-import { RepoList } from "./_components/repos-list";
-import { BranchList } from "./_components/branches-list";
-import { TemplateList } from "./_components/templates-list";
-import { getUserTemplates } from "@/server/template-queries";
-
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import BlurFade from "@/components/magicui/blur-fade";
-import { RotateCw } from 'lucide-react';
 
-
+import { RepoList } from "./_components/repos-list";
+import { BranchList } from "./_components/branches-list";
+import { TemplateList } from "./_components/templates-list";
+import { getUserTemplates } from "@/server/template-queries";
 
 const Icons: {
-  spinner: React.FC<React.SVGProps<SVGSVGElement>>;
+    spinner: React.FC<React.SVGProps<SVGSVGElement>>;
 } = {
-  spinner: Loader2,
+    spinner: Loader2,
 };
 
 export const dynamic = "force-dynamic";
@@ -65,10 +62,10 @@ const BranchSchema = z.object({
 });
 
 const TemplateSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  headings: z.array(z.string()),
-  description: z.string()
+    id: z.string(),
+    title: z.string(),
+    headings: z.array(z.string()),
+    description: z.string()
 })
 
 const FormSchema = z.object({
@@ -205,16 +202,16 @@ const GenerateReport = () => {
             data.template.split("?")[1]
         );
 
-    await addDoc(collection(db, `users/${user.userId}/reports`), {
-      feedback: feedback,
-      date: new Date(),
-      items: data.items,
-      dateRange: data.dateRange
-    });
+        await addDoc(collection(db, `users/${user.userId}/reports`), {
+            feedback: feedback,
+            date: new Date(),
+            items: data.items,
+            dateRange: data.dateRange
+        });
 
-    router.push("/reports");
-    setReport(feedback);
-    setReportGenerating(false);
+        router.push("/reports");
+        setReport(feedback);
+        setReportGenerating(false);
 
         toast({
             title: "Success",

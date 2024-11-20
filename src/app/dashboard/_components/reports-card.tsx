@@ -16,6 +16,14 @@ const ReportSchema = z.object({
   id: z.string(),
   date: z.string(),
   feedback: z.string(),
+  items: z.array(z.object({
+    name: z.string(),
+    owner: z.string(),
+  })),
+  dateRange: z.object({
+    from: z.string(),
+    to: z.string(),
+  }),
 });
 
 export type Reports = z.infer<typeof ReportSchema>;
@@ -32,7 +40,7 @@ export default function ReportsCard({ reports }: { reports: Reports[] }) {
             </CardDescription>
           </div>
           <Button className="ml-auto gap-1">
-            <Link href="#">View All</Link>
+            <Link href="/reports">View All</Link>
           </Button>
         </CardHeader>
         <CardContent>
@@ -56,7 +64,11 @@ export default function ReportsCard({ reports }: { reports: Reports[] }) {
                         <div className="font-medium">Date not available</div>
                       )}
                       <div className="hidden text-sm text-muted-foreground md:inline">
-                        report id: {report?.id}
+                        Report generated for {
+                            report.items.map((repo) => {
+                              return repo.name;
+                          }).join(", ")
+                        }
                       </div>
                     </TableCell>
                   </TableRow>

@@ -42,7 +42,6 @@ export default function ReposCard({ repos }: { repos: Repo[] }) {
         ownerAvatar: repo.owner.avatar_url
       });
     });
-    console.log(result);
     setLoading(false);
     setCurrRepos(tempRepos);
   };
