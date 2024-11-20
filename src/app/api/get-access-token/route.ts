@@ -11,7 +11,9 @@ export async function POST(req: Request) {
       provider
     );
 
-    await updateDoc(doc(db, `users/${userId}`), {
+    const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
+
+    await updateDoc(doc(db, `${userDocName}/${userId}`), {
       accessToken: tokenData.data[0].token,
     });
 

@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export async function POST(req: Request) {
@@ -62,11 +62,12 @@ export async function POST(req: Request) {
   const eventType = evt.type;
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   if (!id) return new Response("User ID not found", { status: 400 });
+  const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
   if (eventType === "user.created") {
     const { first_name, last_name, email_addresses, id } = evt.data;
     try {
       // add user to db
-      await setDoc(doc(db, "users", id), evt.data);
+      await setDoc(doc(db, userDocName, id), evt.data);
       console.log("User created successfully");
     } catch (error) {
       console.error("Error inserting user:", error);
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
     const { first_name, last_name, email_addresses } = evt.data;
     try {
       // update user in db
-
+      await setDoc(doc(db, userDocName, id), evt.data, { merge: true });
       console.log("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);

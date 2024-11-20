@@ -14,8 +14,8 @@ export async function POST(req: Request){
 
         // const {success} = await ratelimit.limit("get-branches-" + userId);
         // if(!success) throw new Error("Rate limit exceeded");
-
-        const userDoc = await getDoc(doc(db, `users/${userId}`));
+        const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string
+        const userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
         if(!userDoc.exists()){
             return new Response("User not found", {status: 404});
         }
