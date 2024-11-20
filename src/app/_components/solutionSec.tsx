@@ -82,7 +82,7 @@ function SolutionSec() {
     <div className="w-full py-16 dark:text-white">
       <div className="w-full flex flex-col items-center justify-center space-y-5">
         <p className="dark:text-white">SOLUTIONS</p>
-        <h2 className="text-5xl font-semibold dark:text-white">
+        <h2 className="text-5xl font-semibold dark:text-white text-center">
           Generate Your Reports Using AutoReportsAI
         </h2>
         <p className="text-base font-medium text-center leading-6 tracking-wide text-slate-500 max-w-2xl">

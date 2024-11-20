@@ -20,14 +20,14 @@ function HowItWorks() {
   }, []);
 
   return (
-    <div className="py-16 space-y-16 px-40 ">
+    <div className="py-16 space-y-16 lg:px-24">
       <div className="text-center space-y-3">
         <p className="text-sm tracking-wide">HOW IT WORKS</p>
         <h2 className="text-5xl font-semibold">Just 3 steps to get started.</h2>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="col-span-2 max-w-xl">
+        <div className="col-span-4 max-w-xl p-4 lg:col-span-2">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
               <div className="bg-red-100 text-red-500 p-2 rounded-full">
@@ -119,7 +119,7 @@ function HowItWorks() {
           </div>
         </div>
 
-        <div className="col-span-2">
+        <div className="col-span-2 hidden lg:block">
           <img
             src={imgURL || ""}
             alt=""
