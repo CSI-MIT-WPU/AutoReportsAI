@@ -10,7 +10,7 @@ import {
 
 export default function FAQS() {
   return (
-    <div className="py-16 space-y-10 px-40 flex flex-col items-center justify-center">
+    <div className="py-16 space-y-10 flex flex-col items-center justify-center p-4">
       <div className="text-center space-y-3">
         <p className="text-sm tracking-wide">FAQS</p>
         <h2 className="text-5xl font-semibold">Frequently asked questions</h2>
