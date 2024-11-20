@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 
 function HowItWorks() {
@@ -25,21 +26,20 @@ function HowItWorks() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M3 7l3-3m0 0l3 3m-3-3v18M21 13l-3 3m0 0l-3-3m3 3V3"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold">1. Upload Your Data</h3>
-              <p className="text-gray-600">
-                Simply upload your data to our secure platform. We support
-                various file formats and data types to ensure seamless
-                integration with your existing systems.
+              <h3 className="text-xl font-semibold">1. Get Started by Providing a Template</h3>
+              <p className="text-gray-500">
+                Our advanced AI algorithms automatically process and analyze
+                your file, extracting the necessary headers and data points that act as report headers.
               </p>
             </div>
           </div>
-
+          
           <div className="border-l-2 border-red-500 ml-3 my-6"></div>
 
           <div className="flex items-start space-x-4">
@@ -56,17 +56,15 @@ function HowItWorks() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                    d="M3 7l3-3m0 0l3 3m-3-3v18M21 13l-3 3m0 0l-3-3m3 3V3"
                   />
                 </svg>
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold">2. Click Start</h3>
-              <p className="text-gray-600">
-                Our advanced AI algorithms automatically process and analyze
-                your data, extracting valuable insights and patterns that would
-                be difficult to identify manually.
+              <h3 className="text-xl font-semibold">2. Upload Report Data</h3>
+              <p className="text-gray-500">
+                Simply select the repositories along with their branches, a specific date range and a template for report generation.
               </p>
             </div>
           </div>
@@ -94,12 +92,12 @@ function HowItWorks() {
             </div>
             <div>
               <h3 className="text-xl font-semibold">
-                3. Get Actionable Insights
+                3. Get Comprehensive Report
               </h3>
-              <p className="text-gray-600">
-                Receive clear, actionable insights and recommendations based on
-                the AI analysis. Use these insights to make data-driven
-                decisions and improve your business strategies.
+              <p className="text-gray-500">
+                Our platform will automatically generate a comprehensive report
+                based on the selected repositories, branches, and the template
+                provided.
               </p>
             </div>
           </div>

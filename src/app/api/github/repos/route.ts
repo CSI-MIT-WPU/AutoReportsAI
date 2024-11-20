@@ -1,8 +1,36 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc, writeBatch } from "firebase/firestore";
 import { auth } from "@clerk/nextjs/server";
 import { ratelimit } from "@/lib/ratelimit";
 import { getUserRepos } from "@/server/repo-queries";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
+
+async function getPaginatedData(url: string, accessToken: string) {
+  const nextPattern = /(?<=<)([\S]*)(?=>; rel="Next")/i;
+  let pagesRemaining = true;
+  let data: any = [];
+  while(pagesRemaining){
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `token ${accessToken}`,
+        Accept: "application/vnd.github+json",
+      },
+    });
+    if(!response.ok){
+      throw new Error(`GitHub API Error: ${response.statusText}`);
+    }
+    const jsonData = await response.json();
+    data = [...data, ...jsonData];
+    const linkHeader = response.headers.get("Link");
+    pagesRemaining = linkHeader !== null && linkHeader.includes(`rel=\"next\"`);
+    if(pagesRemaining && linkHeader){
+      const match = linkHeader.match(nextPattern);
+      if (match) {
+        url = match[0];
+      }
+    }
+  }
+  return data;
+}
 
 export async function POST(req: Request) {
   try {
@@ -22,26 +50,9 @@ export async function POST(req: Request) {
     }
     const accessToken = userDoc.data().accessToken;
 
-    // 2. Fetch Repositories from GitHub API
-    const githubApiResponse = await fetch(
-      "https://api.github.com/user/repos?sort=pushed",
-      {
-        headers: {
-          Authorization: `token ${accessToken}`,
-          Accept: "application/vnd.github+json",
-        },
-      }
-    );
-
-    if (!githubApiResponse.ok) {
-      const errorText = await githubApiResponse.text();
-      return new Response(`GitHub API Error: ${errorText}`, {
-        status: githubApiResponse.status,
-      });
-    }
-
+    // 2. Get locally stored repos and repos from GitHub.
     const localRepos = await getUserRepos(userId);
-    const githubRepos: Array<any> = await githubApiResponse.json();
+    const githubRepos: Array<any> = await getPaginatedData("https://api.github.com/user/repos?sort=pushed", accessToken);
 
     const githubRepoSet = new Set(githubRepos.map(repo => repo.id));
     const reposToDelete = localRepos.filter((localRepo) => {

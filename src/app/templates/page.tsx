@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { TemplateList } from './_components/templates-list';
 import { TemplateViewer } from './_components/templates-viewer';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
@@ -72,15 +73,17 @@ export default function Templates() {
             <Link href="/templates/create-template">Create New Template</Link>
           </Button>
         </div>
-        <TemplateList
-          customTemplates={customTemplates}
-          selectedTemplate={selectedTemplate || customTemplates[0]}
-          setSelectedTemplate={setSelectedTemplate}
-          loading={loading}
-          setOpen={setOpen}
-          open={open}
-          searchTerm={serachTerm}
-        />
+        <ScrollArea>
+          <TemplateList
+            customTemplates={customTemplates}
+            selectedTemplate={selectedTemplate || customTemplates[0]}
+            setSelectedTemplate={setSelectedTemplate}
+            loading={loading}
+            setOpen={setOpen}
+            open={open}
+            searchTerm={serachTerm}
+          />
+        </ScrollArea>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel

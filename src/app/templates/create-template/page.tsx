@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 import React from "react"
-import {Loader2} from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useForm } from "react-hook-form"
 import { UploadIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -20,8 +20,10 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-export const Icons = {
-  spinner: Loader2,
+const Icons: {
+    spinner: React.FC<React.SVGProps<SVGSVGElement>>;
+} = {
+    spinner: Loader2,
 };
 
 const TemplateFormSchema = z.object({
@@ -32,7 +34,7 @@ const TemplateFormSchema = z.object({
     }),
 });
 
-export function CreateTemplate() {
+export default function CreateTemplate() {
 
     const [isFileUploaded, setIsFileUploaded] = React.useState(false);
     const [responseExists, setResponseExists] = React.useState(true);
@@ -192,7 +194,3 @@ export function CreateTemplate() {
     );
 
 }
-
-
-
-export default CreateTemplate

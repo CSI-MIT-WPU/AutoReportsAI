@@ -25,7 +25,11 @@ export default function ReportMobileViewer({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-center text-xl">{report?.id}</DialogTitle>
+                    <DialogTitle className="text-center text-xl">
+                    {
+                        report ? `Report between ${new Date(report.dateRange.from.seconds * 1000).toLocaleDateString("en-GB")} and ${new Date(report.dateRange.to.seconds * 1000).toLocaleDateString("en-GB")}` : "No report available"
+                    }
+                    </DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col">
                     {report ? (
@@ -33,6 +37,17 @@ export default function ReportMobileViewer({
                             <div>
                                 <div className="text-muted-foreground">Created On:</div>
                                 <div className="text-sm">{new Date(report.date.seconds * 1000).toLocaleDateString("en-GB")}</div>
+                            </div>
+                            <Separator />
+                            <div>
+                                <div className="text-muted-foreground">Generated report for: </div>
+                                <div className="text-sm">
+                                    {
+                                        report.items.map((item, index) => (
+                                            <div key={index} className="p-1">{item.name} by {item.owner}</div>
+                                        ))
+                                    }
+                                </div>
                             </div>
                             <Separator />
                             <div>
