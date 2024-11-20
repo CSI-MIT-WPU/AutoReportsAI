@@ -7,7 +7,6 @@ import ProblemSec from "./_components/problemSec";
 import HowItWorks from "./_components/howItWorks";
 import HeroSection from "./_components/HeroSection";
 import SolutionSec from "./_components/solutionSec";
-import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Home() {
   return (
