@@ -16,7 +16,8 @@ export async function POST(req: Request) {
     if (!success) throw new Error("Rate limit exceeded");
 
     // 1. Retrieve Access Token from Firestore
-    const userDoc = await getDoc(doc(db, `users/${userId}`));
+    const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
+    const userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
     if (!userDoc.exists()) {
       return new Response("User not found", { status: 404 });
     }

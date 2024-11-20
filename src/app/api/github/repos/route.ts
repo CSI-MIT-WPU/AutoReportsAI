@@ -8,21 +8,21 @@ async function getPaginatedData(url: string, accessToken: string) {
   const nextPattern = /(?<=<)([\S]*)(?=>; rel="Next")/i;
   let pagesRemaining = true;
   let data: any = [];
-  while(pagesRemaining){
+  while (pagesRemaining) {
     const response = await fetch(url, {
       headers: {
         Authorization: `token ${accessToken}`,
         Accept: "application/vnd.github+json",
       },
     });
-    if(!response.ok){
+    if (!response.ok) {
       throw new Error(`GitHub API Error: ${response.statusText}`);
     }
     const jsonData = await response.json();
     data = [...data, ...jsonData];
     const linkHeader = response.headers.get("Link");
     pagesRemaining = linkHeader !== null && linkHeader.includes(`rel=\"next\"`);
-    if(pagesRemaining && linkHeader){
+    if (pagesRemaining && linkHeader) {
       const match = linkHeader.match(nextPattern);
       if (match) {
         url = match[0];
@@ -44,7 +44,8 @@ export async function POST(req: Request) {
     if (!success) throw new Error("Rate limit exceeded");
 
     // 1. Retrieve Access Token from Firestore
-    const userDoc = await getDoc(doc(db, `users/${userId}`));
+    const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
+    const userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
     if (!userDoc.exists()) {
       return new Response("User not found", { status: 404 });
     }
@@ -52,9 +53,12 @@ export async function POST(req: Request) {
 
     // 2. Get locally stored repos and repos from GitHub.
     const localRepos = await getUserRepos(userId);
-    const githubRepos: Array<any> = await getPaginatedData("https://api.github.com/user/repos?sort=pushed", accessToken);
+    const githubRepos: Array<any> = await getPaginatedData(
+      "https://api.github.com/user/repos?sort=pushed",
+      accessToken
+    );
 
-    const githubRepoSet = new Set(githubRepos.map(repo => repo.id));
+    const githubRepoSet = new Set(githubRepos.map((repo) => repo.id));
     const reposToDelete = localRepos.filter((localRepo) => {
       if (!githubRepoSet.has(localRepo.id)) {
         return localRepo;
@@ -64,7 +68,10 @@ export async function POST(req: Request) {
     // 3. Perform batch delete in case repo exists in local storage and not on github
     const batch = writeBatch(db);
     reposToDelete.forEach((repo) => {
-      const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+      const repoRef = doc(
+        db,
+        `${userDocName}/${userId}/repositories/${repo.id}`
+      );
       batch.delete(repoRef);
     });
 
@@ -78,7 +85,10 @@ export async function POST(req: Request) {
         userId: userId,
         ownerAvatar: repo.owner.avatar_url,
       };
-      const repoRef = doc(db, `users/${userId}/repositories/${repo.id}`);
+      const repoRef = doc(
+        db,
+        `${userDocName}/${userId}/repositories/${repo.id}`
+      );
       batch.set(repoRef, formattedRepo);
     });
 
