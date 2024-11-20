@@ -1,14 +1,18 @@
 "use client";
 
-import React from 'react'
-import Link from 'next/link';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { TemplateList } from './_components/templates-list';
-import { TemplateViewer } from './_components/templates-viewer';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import React from "react";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { TemplateList } from "./_components/templates-list";
+import { TemplateViewer } from "./_components/templates-viewer";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 export interface CustomTemplate {
   title: string;
@@ -18,9 +22,11 @@ export interface CustomTemplate {
 }
 
 export default function Templates() {
-
-  const [customTemplates, setCustomTemplates] = React.useState([] as CustomTemplate[]);
-  const [selectedTemplate, setSelectedTemplate] = React.useState<CustomTemplate | null>(null);
+  const [customTemplates, setCustomTemplates] = React.useState(
+    [] as CustomTemplate[]
+  );
+  const [selectedTemplate, setSelectedTemplate] =
+    React.useState<CustomTemplate | null>(customTemplates[0]);
   const [serachTerm, setSearchTerm] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -51,14 +57,14 @@ export default function Templates() {
       direction="horizontal"
       onLayout={(sizes: number[]) => {
         document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-          sizes,
+          sizes
         )}`;
       }}
       className="min-h-screen items-stretch"
     >
       <ResizablePanel defaultSize={440} minSize={30}>
         <div className="flex justify-between gap-4 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <form className='w-[80%]'>
+          <form className="w-[80%]">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -86,14 +92,11 @@ export default function Templates() {
         </ScrollArea>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel
-        defaultSize={655}
-        className="hidden md:block"
-      >
+      <ResizablePanel defaultSize={655} className="hidden md:block">
         <TemplateViewer
           customTemplate={selectedTemplate || customTemplates[0]}
         />
       </ResizablePanel>
     </ResizablePanelGroup>
-  )
+  );
 }

@@ -92,23 +92,15 @@ function SolutionSec() {
       </div>
 
       <div className="w-4/5 mx-auto flex flex-col items-center my-20">
-        <motion.h3
+        <motion.div
           ref={ref}
-          className="text-accent-foreground font-semibold text-3xl underline underline-offset-4 mb-12"
           initial={{ opacity: 0, y: -10 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}} // Only animate if in view
           transition={{ delay: 0.2, duration: 1.5, type: "spring" }}
         >
-          Our Solution
-        </motion.h3>
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}} // Only animate if in view
-          transition={{ delay: 0.5, duration: 1.5, type: "spring" }}
-        >
           <BentoGrid className="lg:grid-rows-3">
             {solutions.map((feature) => (
-              <BentoCard key={feature.name} {...feature}/>
+              <BentoCard key={feature.name} {...feature} />
             ))}
           </BentoGrid>
         </motion.div>

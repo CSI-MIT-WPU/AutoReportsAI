@@ -6,7 +6,12 @@ import { getUserRepos } from "@/server/repo-queries";
 import ReportsCard from "./_components/reports-card";
 import { getUserReports } from "@/server/reports-queries";
 import { getUserTemplates } from "@/server/template-queries";
-import { ClipboardMinus, Clock, FolderGit2, LayoutPanelTop } from "lucide-react";
+import {
+  ClipboardMinus,
+  Clock,
+  FolderGit2,
+  LayoutPanelTop,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -19,34 +24,50 @@ const Dashboard = async () => {
   const cardData = [
     {
       cardTitle: "Total Repositories",
-      cardMain: `${storedRepos.length} Repositories`,
-      cardSecondary: `${storedRepos.filter((repo) => repo.private).length} Private, ${storedRepos.filter((repo) => !repo.private).length} Public`,
-      cardIcon: <FolderGit2 size={24} />
+      cardMain: `${storedRepos.length || 0} Repositories`,
+      cardSecondary: `${
+        storedRepos?.filter((repo) => repo.private).length || 0
+      } Private, ${
+        storedRepos?.filter((repo) => !repo.private).length || 0
+      } Public`,
+      cardIcon: <FolderGit2 size={24} />,
     },
     {
       cardTitle: "Total Reports",
-      cardMain:`${storedReports.length} Reports`,
+      cardMain: `${storedReports.length || 0} Reports`,
       cardSecondary: `${storedReports.length} reports generated.`,
-      cardIcon: <ClipboardMinus size={24}/>
+      cardIcon: <ClipboardMinus size={24} />,
     },
     {
       cardTitle: "Total Templates",
-      cardMain: `${storedTemplates.length} Templates`,
-      cardSecondary: `${storedTemplates.length} custom templates created.`,
-      cardIcon: <LayoutPanelTop size={24}/>,
+      cardMain: `${storedTemplates.length || 0} Templates`,
+      cardSecondary: `${storedTemplates.length || 0} custom templates created.`,
+      cardIcon: <LayoutPanelTop size={24} />,
     },
     {
       cardTitle: "Latest report",
-      cardMain: `${new Date(
-        storedReports.map((report) => report.date).slice(-1)[0].seconds * 1000 +
-        storedReports.map((report) => report.date).slice(-1)[0].nanoseconds / 1e6
-      ).toLocaleDateString('en-GB').replace(/\//g, '-')}`,
-      cardSecondary: `Last report was created on ${new Date(
-        storedReports.map((report) => report.date).slice(-1)[0].seconds * 1000 +
-        storedReports.map((report) => report.date).slice(-1)[0].nanoseconds / 1e6
-      ).toLocaleDateString('en-GB').replace(/\//g, '-')}`,
-      cardIcon: <Clock size={24}/>,
-    }
+      cardMain:
+        `${new Date(
+          storedReports?.map((report) => report.date).slice(-1)[0]?.seconds *
+            1000 +
+            storedReports?.map((report) => report.date).slice(-1)[0]
+              ?.nanoseconds /
+              1e6
+        )
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "-")}` || "No Latest Report",
+      cardSecondary:
+        `Last report was created on ${new Date(
+          storedReports?.map((report) => report.date).slice(-1)[0]?.seconds *
+            1000 +
+            storedReports?.map((report) => report.date).slice(-1)[0]
+              ?.nanoseconds /
+              1e6
+        )
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "-")}` || "No Latest Report",
+      cardIcon: <Clock size={24} />,
+    },
   ];
 
   return (
@@ -59,7 +80,11 @@ const Dashboard = async () => {
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <ReposCard repos={storedRepos.reverse()} />
-          <ReportsCard reports={storedReports.sort((a, b) => b.date.toMillis() - a.date.toMillis()).slice(0, 5)} />
+          <ReportsCard
+            reports={storedReports
+              .sort((a, b) => b.date.toMillis() - a.date.toMillis())
+              .slice(0, 5)}
+          />
         </div>
       </main>
     </>

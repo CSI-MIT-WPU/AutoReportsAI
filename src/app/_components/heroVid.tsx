@@ -5,15 +5,13 @@ import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import getAsset from "@/server/get-asset";
 
 function HeroVid() {
-
   const [imgURL, setImgURL] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchThumbnail = async () => {
       const url = await getAsset("assets/dashboard.png");
-      console.log(url)
+      console.log(url);
       return url;
-      
     };
     fetchThumbnail().then((url) => {
       setImgURL(url);
@@ -21,7 +19,7 @@ function HeroVid() {
   }, []);
 
   return (
-    <BlurFade delay={0.25 * 5} inView>
+    <BlurFade inView>
       <div className="relative w-full flex flex-col items-center justify-center">
         <HeroVideoDialog
           className="dark:hidden block w-4/5"

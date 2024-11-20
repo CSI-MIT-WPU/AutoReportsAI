@@ -84,6 +84,7 @@ export default function HeroVideoDialog({
         onClick={() => setIsVideoOpen(true)}
       >
         <img
+          fetchPriority="high"
           src={thumbnailSrc}
           alt={thumbnailAlt}
           width={1920}

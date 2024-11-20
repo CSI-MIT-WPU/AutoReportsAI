@@ -39,7 +39,11 @@ export default function Navbar() {
         </nav>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0 md:hidden"
+            >
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
@@ -86,7 +90,9 @@ export default function Navbar() {
       <SignedOut>
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 w-full justify-between">
           <h3>
-            <Link href="/" className="font-semibold text-xl tracking-tighter">AutoReportsAI</Link>
+            <Link href="/" className="font-semibold text-xl tracking-tighter">
+              AutoReportsAI
+            </Link>
           </h3>
           <Button className="px-6">
             <SignInButton />
