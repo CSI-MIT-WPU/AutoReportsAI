@@ -45,11 +45,30 @@ export async function POST(req: Request) {
 
     // 1. Retrieve Access Token from Firestore
     const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
-    const userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
+    let userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
     if (!userDoc.exists()) {
       return new Response("User not found", { status: 404 });
     }
-    const accessToken = userDoc.data().accessToken;
+    let accessToken = userDoc.data().accessToken;
+
+    if (!accessToken) {
+      await fetch("/api/get-access-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          provider: "oauth_github",
+        }),
+      });
+    }
+
+    userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
+    if (!userDoc.exists()) {
+      return new Response("User not found", { status: 404 });
+    }
+    accessToken = userDoc.data().accessToken;
 
     // 2. Get locally stored repos and repos from GitHub.
     const localRepos = await getUserRepos(userId);
