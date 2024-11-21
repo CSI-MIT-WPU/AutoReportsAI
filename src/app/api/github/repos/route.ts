@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     let accessToken = userDoc.data().accessToken;
 
     if (!accessToken) {
-      await fetch("/api/get-access-token", {
+      await fetch("https://autoreportsai.csi-mitwpu.in/api/get-access-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
