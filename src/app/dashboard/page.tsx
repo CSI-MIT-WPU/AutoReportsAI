@@ -47,7 +47,9 @@ const Dashboard = async () => {
     {
       cardTitle: "Latest report",
       cardMain:
-        `${new Date(
+        `${
+          storedReports.length > 0 ?
+          new Date(
           storedReports?.map((report) => report.date).slice(-1)[0]?.seconds *
             1000 +
             storedReports?.map((report) => report.date).slice(-1)[0]
@@ -55,9 +57,12 @@ const Dashboard = async () => {
               1e6
         )
           .toLocaleDateString("en-GB")
-          .replace(/\//g, "-")}` || "No Latest Report",
-      cardSecondary:
-        `Last report was created on ${new Date(
+          .replace(/\//g, "-") : "No Reports Available!"}` || "No Latest Report",
+      cardSecondary: 
+        `${
+          storedReports.length > 0 ?
+          "Latest report was generated on " +
+          new Date(
           storedReports?.map((report) => report.date).slice(-1)[0]?.seconds *
             1000 +
             storedReports?.map((report) => report.date).slice(-1)[0]
@@ -65,7 +70,7 @@ const Dashboard = async () => {
               1e6
         )
           .toLocaleDateString("en-GB")
-          .replace(/\//g, "-")}` || "No Latest Report",
+          .replace(/\//g, "-") : "Generate a Report!"}` || "No Latest Report",
       cardIcon: <Clock size={24} />,
     },
   ];
