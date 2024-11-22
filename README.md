@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AutoReportsAI
+
+AutoReportsAI is a powerful tool designed to streamline the creation of reports based on GitHub commits. This application eliminates the tedious and time-consuming process of manual report generation by automating it with AI. AutoReportsAI is particularly useful for companies that require periodic reports of employees' work, such as weekly or monthly updates.
+
+## Features
+
+- **Automated Report Generation:** Generate detailed reports from GitHub repositories based on specified criteria (repository name, branch, and date range).
+- **Custom Templates:** Select and apply custom templates to tailor reports to specific needs.
+- **Authentication:** Secure access using Clerk for authentication.
+- **Modern Dashboard:** Intuitive UI built with Shadcn.
+- **AI-Powered Insights:** Leverages Worqhat's AiCon-V2 AI model for intelligent report generation.
+
+---
+
+## Architecture
+
+AutoReportsAI follows a modern architecture with the following technologies:
+
+- **Frontend:** Built with [Next.js](https://nextjs.org/) using TypeScript for robust and maintainable code.
+- **Backend:** Firebase is used to store and manage data efficiently.
+- **AI Integration:** Worqhat's [AiCon-V2](https://docs.worqhat.com/api-8951034) AI model processes commits to generate insightful and structured reports.
+- **Authentication:** Powered by [Clerk](https://clerk.com/) for a seamless and secure user experience.
+- **Styling:** UI components crafted using [Shadcn](https://ui.shadcn.com/) for a clean, modern appearance.
+
+---
+
+## Purpose
+
+In many workplaces, employees must submit regular reports detailing their progress. Manually compiling these reports from GitHub commits is tedious and prone to errors. AutoReportsAI automates this process, saving time and ensuring consistency in reporting.
+
+---
+
+## Problem Solved
+
+- **Time Efficiency:** Automates repetitive tasks, allowing employees to focus on their core work.
+- **Accuracy:** Eliminates human errors in summarizing commits.
+- **Customization:** Supports customizable templates for professional-grade reports.
+- **Scalability:** Efficiently handles multiple repositories and users.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up and run AutoReportsAI on your local machine:
 
+# Installation
+
+### Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/CSI-MIT-WPU/AutoReportsAI.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Navigate to the Project Directory
+```bash
+cd AutoReportsAI
+```
+### Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Set API Keys
+### Create a .env.local file in the project root and add the following keys:
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+WEBHOOK_SECRET=your_webhook_secret
+UPSTASH_REDIS_REST_URL=your_upstash_redis_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_rest_token
+WORQHAT_API_KEY=your_worqhat_api_key
+NEXT_PUBLIC_DB_USERS_DOC=your_db_users_doc
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Run the Development Server
+```bash
+npm run dev
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Access the Application
+### Open your browser and navigate to: http://localhost:3000
