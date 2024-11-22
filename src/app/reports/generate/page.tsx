@@ -17,8 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import BlurFade from "@/components/magicui/blur-fade";
 import { getRepoCommits } from "@/server/commit-queries";
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
-import { DatePickerWithRange } from "@/app/dashboard/_components/range-picker";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { DatePickerWithRange } from "@/app/dashboard/_components/range-picker";
 import {
   Tooltip,
   TooltipContent,
@@ -227,6 +227,7 @@ const GenerateReport = () => {
       field.onChange([...field.value, repo]);
     } else {
       field.onChange(field.value.filter((item) => item.id !== repo.id));
+      setSelectedRepos(selectedRepos.filter((item) => item.id !== repo.id));
     }
   };
 
