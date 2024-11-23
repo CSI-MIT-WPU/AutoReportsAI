@@ -62,6 +62,7 @@ npm install
 ### Set API Keys
 ### Create a .env.local file in the project root and add the following keys:
 ```bash
+BASE_URL=http://localhost:3000
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
 WEBHOOK_SECRET=your_webhook_secret
@@ -69,6 +70,13 @@ UPSTASH_REDIS_REST_URL=your_upstash_redis_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_rest_token
 WORQHAT_API_KEY=your_worqhat_api_key
 NEXT_PUBLIC_DB_USERS_DOC=your_db_users_doc
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
 ```
 
 ### Run the Development Server
@@ -77,4 +85,5 @@ npm run dev
 ```
 
 ### Access the Application
-### Open your browser and navigate to: http://localhost:3000
+### Open your browser and navigate to:
+## http://localhost:3000

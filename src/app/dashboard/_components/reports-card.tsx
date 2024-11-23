@@ -81,7 +81,13 @@ export default function ReportsCard({ reports }: { reports: Reports[] }) {
                   );
                 })
               ) : (
-                <div>No Reports Generated</div>
+                <TableRow>
+                  <TableCell>
+                    <div className="text-xl text-center mt-4">
+                      Generate a report to see it here!
+                    </div>
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
