@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, AudioWaveform } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Navbar() {
   return (
@@ -79,8 +80,9 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <div className="ml-auto flex-1 sm:flex-initial">
-            <Button>
+          <div className="ml-auto flex items-center flex-1 sm:flex-initial">
+            <ModeToggle />
+            <Button size={"default"} variant={"outline"} className="ml-2">
               <Link href="/reports/generate">Generate Report</Link>
             </Button>
           </div>

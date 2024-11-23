@@ -31,14 +31,14 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
-          <Navbar />
-          <Toaster />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
+            // disableTransitionOnChange
           >
+            <Navbar />
+            <Toaster />
             {children}
           </ThemeProvider>
         </body>
