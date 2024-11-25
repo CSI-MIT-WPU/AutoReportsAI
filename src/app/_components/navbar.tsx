@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { UserButton } from "./userButton";
 import { Button } from "@/components/ui/button";
 import { Menu, AudioWaveform } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/mode-toggle";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Navbar() {
   return (
@@ -86,7 +87,7 @@ export default function Navbar() {
               <Link href="/reports/generate">Generate Report</Link>
             </Button>
           </div>
-          <UserButton />
+          <UserButton/>
         </div>
       </SignedIn>
       <SignedOut>
