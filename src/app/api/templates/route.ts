@@ -48,66 +48,79 @@ export async function POST(request: Request) {
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
-    const file = formData.get("file") as File;
+    const file = formData.get("file") as File | null;
+    const reqType = formData.get("type") as string;
 
-    if (!title || !description || !file) {
-      return new Response("Title, description and file are required", {
-        status: 400,
-      });
+    if (reqType == "manual") {
+      //do some
     }
+    else {
+      try {
+        
+        if (!title || !description || !file) {
+          return new Response("Title, description and file are required", {
+            status: 400,
+          });
+        }
 
-    // 3. Add file to firestore storage
-    const storage = getStorage();
-    storageRef = ref(storage, `templates/${userId}/${uniqueId}-${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    const fileUrl = await getDownloadURL(snapshot.ref);
+        if (file.type !== "application/pdf") {
+          return new Response("Only PDF files are allowed", { status: 400 });
+        }
 
-    // 4. Create a new template doc
-    docRef = doc(db, `${userDocName}/${userId}/templates/${uniqueId}`);
-    await setDoc(docRef, {
-      title: title,
-      description: description,
-      fileUrl: fileUrl,
-      createdAt: new Date().toISOString(),
-    });
+        // 3. Add file to firestore storage
+        const storage = getStorage();
+        storageRef = ref(storage, `templates/${userId}/${uniqueId}-${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const fileUrl = await getDownloadURL(snapshot.ref);
 
-    // 5. Send API request to worqhat-API to extract text from the PDF file
-    const extractedText = await extractText(file);
-    if (extractedText === "Unable to extract text from PDF file.") {
-      return new Response("Unable to extract text from PDF file.", {
-        status: 500,
-      });
+        // 4. Create a new template doc
+        docRef = doc(db, `${userDocName}/${userId}/templates/${uniqueId}`);
+        await setDoc(docRef, {
+          title: title,
+          description: description,
+          fileUrl: fileUrl,
+          createdAt: new Date().toISOString(),
+        });
+
+        // 5. Send API request to worqhat-API to extract text from the PDF file
+        const extractedText = await extractText(file);
+        if (extractedText === "Unable to extract text from PDF file.") {
+          return new Response("Unable to extract text from PDF file.", {
+            status: 500,
+          });
+        }
+
+        // 6. Get headings from the extracted text
+        headings = await extractHeaders(extractedText);
+        if (headings === "Unable to extract headers.") {
+          return new Response("Unable to extract headers.", { status: 500 });
+        }
+
+        // 7. Add list of headers to template doc
+        headings = headings.replace(/:/g, " ");
+        const headingArray = headings
+          .split(" ")
+          .filter((word) => word.trim() !== "");
+        await setDoc(docRef, { headings: headingArray }, { merge: true });
+
+        return new Response("Template created successfully", { status: 200 });
+
+      } catch (error) {
+        // In case of failure, clean storage by removing added file and associated template doc
+        if (storageRef) {
+          await deleteObject(storageRef).catch((deleteError) => {
+            console.error("Failed to delete file from storage:", deleteError);
+          });
+        }
+        if (docRef) {
+          await deleteDoc(docRef).catch((deleteError) => {
+            console.error("Failed to delete template doc:", deleteError);
+          });
+        }
+      }
     }
-
-    // 6. Get headings from the extracted text
-    headings = await extractHeaders(extractedText);
-    if (headings === "Unable to extract headers.") {
-      return new Response("Unable to extract headers.", { status: 500 });
-    }
-
-    // 7. Add list of headers to template doc
-    headings = headings.replace(/:/g, " ");
-    const headingArray = headings
-      .split(" ")
-      .filter((word) => word.trim() !== "");
-    await setDoc(docRef, { headings: headingArray }, { merge: true });
-
-    return new Response("Template created successfully", { status: 200 });
   } catch (error) {
     console.error("Error creating a new template", error);
-
-    // In case of failure, clean storage by removing added file and associated template doc
-    if (storageRef) {
-      await deleteObject(storageRef).catch((deleteError) => {
-        console.error("Failed to delete file from storage:", deleteError);
-      });
-    }
-    if (docRef) {
-      await deleteDoc(docRef).catch((deleteError) => {
-        console.error("Failed to delete template doc:", deleteError);
-      });
-    }
-
     return new Response("Internal Server Error", { status: 500 });
   }
 }
