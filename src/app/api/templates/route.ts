@@ -49,10 +49,26 @@ export async function POST(request: Request) {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const file = formData.get("file") as File | null;
+    const formHeadings = formData.get("headers") as string | null;
     const reqType = formData.get("type") as string;
 
+    //check if the request coming from the user is manual or automatic aka if the user has entered headings thru the form or sent a file thru request
     if (reqType == "manual") {
-      //do some
+
+      if (!title || !description || !formHeadings) {
+        return new Response("Title, description and headings are required", {
+          status: 400,
+        });
+      }
+      const headingsArray = formHeadings.split(",");
+      docRef = doc(db, `${userDocName}/${userId}/templates/${uniqueId}`);
+      await setDoc(docRef, {
+        title: title,
+        description: description,
+        headings: headingsArray,
+        createdAt: new Date().toISOString(),
+      });
+      return new Response("Template created successfully", { status: 200 });
     }
     else {
       try {
