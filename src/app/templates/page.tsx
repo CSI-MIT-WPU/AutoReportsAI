@@ -20,8 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-
+} from "@/components/ui/dialog";
 
 export interface CustomTemplate {
   title: string;
@@ -31,9 +30,11 @@ export interface CustomTemplate {
 }
 
 export default function Templates() {
-
-  const [customTemplates, setCustomTemplates] = React.useState([] as CustomTemplate[]);
-  const [selectedTemplate, setSelectedTemplate] = React.useState<CustomTemplate | null>(customTemplates[0]);
+  const [customTemplates, setCustomTemplates] = React.useState(
+    [] as CustomTemplate[]
+  );
+  const [selectedTemplate, setSelectedTemplate] =
+    React.useState<CustomTemplate | null>(customTemplates[0]);
   const [serachTerm, setSearchTerm] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -84,15 +85,15 @@ export default function Templates() {
           </form>
           <Dialog>
             <DialogTrigger asChild>
-              <Button>
-                Create New Template
-              </Button>
+              <Button>Create New Template</Button>
             </DialogTrigger>
             <DialogContent className="max-h-screen z-[1000]">
               <DialogHeader>
                 <DialogTitle>Create New Template</DialogTitle>
                 <DialogDescription>
-                  A template is the format for a report. Upload a PDF file or enter the format manually to define the structure and format for generating commit reports.
+                  A template is the format for a report. Upload a PDF file or
+                  enter the format manually to define the structure and format
+                  for generating commit reports.
                 </DialogDescription>
               </DialogHeader>
               <CreateTemplate />
