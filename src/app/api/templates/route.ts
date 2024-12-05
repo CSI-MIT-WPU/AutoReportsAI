@@ -54,7 +54,6 @@ export async function POST(request: Request) {
 
     //check if the request coming from the user is manual or automatic aka if the user has entered headings thru the form or sent a file thru request
     if (reqType == "manual") {
-
       if (!title || !description || !formHeadings) {
         return new Response("Title, description and headings are required", {
           status: 400,
@@ -69,10 +68,8 @@ export async function POST(request: Request) {
         createdAt: new Date().toISOString(),
       });
       return new Response("Template created successfully", { status: 200 });
-    }
-    else {
+    } else {
       try {
-        
         if (!title || !description || !file) {
           return new Response("Title, description and file are required", {
             status: 400,
@@ -85,11 +82,14 @@ export async function POST(request: Request) {
 
         // 3. Add file to firestore storage
         const storage = getStorage();
-        storageRef = ref(storage, `templates/${userId}/${uniqueId}-${file.name}`);
+        storageRef = ref(
+          storage,
+          `templates/${userId}/${uniqueId}-${file.name}`
+        );
         const snapshot = await uploadBytes(storageRef, file);
         const fileUrl = await getDownloadURL(snapshot.ref);
 
-        // 4. Create a new template doc
+        // // 4. Create a new template doc
         docRef = doc(db, `${userDocName}/${userId}/templates/${uniqueId}`);
         await setDoc(docRef, {
           title: title,
@@ -112,7 +112,6 @@ export async function POST(request: Request) {
         await setDoc(docRef, { headings: headingArray }, { merge: true });
 
         return new Response("Template created successfully", { status: 200 });
-
       } catch (error) {
         // In case of failure, clean storage by removing added file and associated template doc
         if (storageRef) {
