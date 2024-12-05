@@ -9,20 +9,23 @@ const generateReport = async (commits: any[], from: string, to: string, headings
   ${headings}
   
   Commits: ${commits
-    .map((commit: any) => `- ${commit.date} -> ${commit.message}`)
-    .join("\n")}`;
+      .map((commit: any) => `- ${commit.date} -> ${commit.message}`)
+      .join("\n")}`;
+
+  const formData = new FormData();
+  formData.append("question", prompt);
+  formData.append('model', 'aicon-v4-nano-160824');
+  formData.append('stream_data', 'false');
+  formData.append('response_type', 'text');
 
   const options = {
     method: "POST",
-    url: "https://api.worqhat.com/api/ai/content/v2",
+    url: 'https://api.worqhat.com/api/ai/content/v4',
     headers: {
-      Authorization: `Bearer ${process.env.WORQHAT_API_KEY as string}`,
-      "Content-Type": "application/json",
+      'Authorization': `Bearer ${process.env.WORQHAT_API_KEY as string}`,
+      'Content-Type': 'application/json'
     },
-    data: {
-      question: prompt,
-      randomness: 0.1,
-    },
+    data: formData
   };
 
   try {

@@ -98,21 +98,13 @@ export async function POST(request: Request) {
           createdAt: new Date().toISOString(),
         });
 
-        // 5. Send API request to worqhat-API to extract text from the PDF file
-        const extractedText = await extractText(file);
-        if (extractedText === "Unable to extract text from PDF file.") {
-          return new Response("Unable to extract text from PDF file.", {
-            status: 500,
-          });
-        }
-
-        // 6. Get headings from the extracted text
-        headings = await extractHeaders(extractedText);
+        // 5. Get headings from the extracted text
+        headings = await extractHeaders(file);
         if (headings === "Unable to extract headers.") {
           return new Response("Unable to extract headers.", { status: 500 });
         }
 
-        // 7. Add list of headers to template doc
+        // 6. Add list of headers to template doc
         headings = headings.replace(/:/g, " ");
         const headingArray = headings
           .split(" ")
