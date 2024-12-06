@@ -36,6 +36,8 @@ const generateReport = async (commits: any[], from: string, to: string, headings
     const { success } = await ratelimit.limit("generate-report-" + userId);
     if (!success) throw new Error("Rate limit exceeded");
 
+    console.log(`server response report-gen: ${headings}`);
+
     const response = await axios(options);
     const feedback = response.data.content.trim();
 

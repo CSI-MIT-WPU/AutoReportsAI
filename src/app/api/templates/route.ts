@@ -1,6 +1,5 @@
 import { db } from "@/lib/firebase";
 import { auth } from "@clerk/nextjs/server";
-import { extractText } from "@/server/extract-text";
 import { extractHeaders } from "@/server/extract-header";
 import {
   collection,
@@ -124,6 +123,7 @@ export async function POST(request: Request) {
             console.error("Failed to delete template doc:", deleteError);
           });
         }
+        return new Response("Error creating a new template", { status: 500 });
       }
     }
   } catch (error) {
