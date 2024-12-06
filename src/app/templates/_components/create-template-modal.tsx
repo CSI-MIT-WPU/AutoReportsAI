@@ -4,7 +4,6 @@ import { z } from "zod";
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -33,14 +32,14 @@ const TemplateFormSchema = z
     file:
       typeof window !== "undefined"
         ? z
-            .instanceof(File, { message: "File is required!" })
-            .optional()
-            .refine(
-              (file) => !file || file.type.startsWith("application/pdf"),
-              {
-                message: "Please upload a PDF file.",
-              }
-            )
+          .instanceof(File, { message: "File is required!" })
+          .optional()
+          .refine(
+            (file) => !file || file.type.startsWith("application/pdf"),
+            {
+              message: "Please upload a PDF file.",
+            }
+          )
         : z.any(),
     headers: z.string().max(300).optional(),
   })
@@ -48,10 +47,13 @@ const TemplateFormSchema = z
     message: "Either file or headers must be provided.",
   });
 
-export default function CreateTemplate() {
-  const [isFileUploaded, setIsFileUploaded] = React.useState(false);
+interface CreateTemplateProps {
+  toggleDialogState: () => void;
+  setReloadKey: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function CreateTemplate({ toggleDialogState, setReloadKey }: CreateTemplateProps) {
   const [responseExists, setResponseExists] = React.useState(true);
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof TemplateFormSchema>>({
     resolver: zodResolver(TemplateFormSchema),
@@ -91,7 +93,9 @@ export default function CreateTemplate() {
       method: "POST",
       body: formData,
     });
-    setResponseExists(true);
+    setResponseExists(true); //kills loader
+    toggleDialogState(); // closes the dialog
+    setReloadKey((prev) => prev + 1); // reloads the templates list
     if (response.ok) {
       console.log("Template created successfully");
       console.log(response.body);
@@ -298,3 +302,7 @@ export default function CreateTemplate() {
     </>
   );
 }
+function toggleDialogState() {
+  throw new Error("Function not implemented.");
+}
+

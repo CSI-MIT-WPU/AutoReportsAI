@@ -19,7 +19,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 export interface CustomTemplate {
@@ -30,13 +29,12 @@ export interface CustomTemplate {
 }
 
 export default function Templates() {
-  const [customTemplates, setCustomTemplates] = React.useState(
-    [] as CustomTemplate[]
-  );
-  const [selectedTemplate, setSelectedTemplate] =
-    React.useState<CustomTemplate | null>(customTemplates[0]);
+  const [customTemplates, setCustomTemplates] = React.useState([] as CustomTemplate[]);
+  const [selectedTemplate, setSelectedTemplate] = React.useState<CustomTemplate | null>(customTemplates[0]);
+  const [createTemplateDialogOpen, setCreateTemplateDialogOpen] = React.useState(false);
   const [serachTerm, setSearchTerm] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [reloadKey, setReloadKey] = React.useState(0);
   const [error, setError] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
@@ -58,7 +56,10 @@ export default function Templates() {
     }
 
     getCustomTemplates();
-  }, []);
+  }, [reloadKey]);
+
+  //function to close/open the create template dialog box
+  const toggleDialogState = () => setCreateTemplateDialogOpen(!createTemplateDialogOpen);
 
   return (
     <ResizablePanelGroup
@@ -83,10 +84,8 @@ export default function Templates() {
               />
             </div>
           </form>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>Create New Template</Button>
-            </DialogTrigger>
+          <Dialog open={createTemplateDialogOpen} onOpenChange={setCreateTemplateDialogOpen}>
+            <Button onClick={(e) => setCreateTemplateDialogOpen(true)}>Create New Template</Button>
             <DialogContent className="max-h-screen z-[1000]">
               <DialogHeader>
                 <DialogTitle>Create New Template</DialogTitle>
@@ -96,13 +95,13 @@ export default function Templates() {
                   for generating commit reports.
                 </DialogDescription>
               </DialogHeader>
-              <CreateTemplate />
+              <CreateTemplate toggleDialogState={toggleDialogState} setReloadKey={setReloadKey}/>
             </DialogContent>
           </Dialog>
         </div>
         <ScrollArea>
           <TemplateList
-            customTemplates={customTemplates}
+            customTemplates={customTemplates.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1)}
             selectedTemplate={selectedTemplate || customTemplates[0]}
             setSelectedTemplate={setSelectedTemplate}
             loading={loading}
