@@ -14,7 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { getUserRepos } from "@/server/repo-queries";
 import { generateReport } from "@/server/report-gen";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BlurFade from "@/components/magicui/blur-fade";
 import { getRepoCommits } from "@/server/commit-queries";
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -295,7 +294,6 @@ const GenerateReport = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {step === 1 && (
-              <BlurFade delay={0.5} inView>
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
                     <h2 className="text-3xl font-bold">
@@ -332,10 +330,8 @@ const GenerateReport = () => {
                     />
                   )}
                 </div>
-              </BlurFade>
             )}
             {step === 2 && (
-              <BlurFade delay={0.5} inView>
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
                     <h2 className="text-3xl font-bold">2. Choose the Branch</h2>
@@ -366,10 +362,8 @@ const GenerateReport = () => {
                     handleBranchSelect={handleBranchSelect}
                   />
                 </div>
-              </BlurFade>
             )}
             {step === 3 && (
-              <BlurFade delay={0.5} inView>
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
                     <h2 className="text-3xl font-bold">
@@ -406,7 +400,6 @@ const GenerateReport = () => {
                     )}
                   />
                 </div>
-              </BlurFade>
             )}
             {step === 4 && (
               <div className="space-y-5">
