@@ -49,7 +49,6 @@ export const ReportsList: React.FC<{
                                     )
                             )
                             .map((report, index) => {
-                                console.log(report)
                                 if (!report.id) return null;
                                 return (
                                     <button
