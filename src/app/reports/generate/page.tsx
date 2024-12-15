@@ -3,7 +3,7 @@
 import { z } from "zod";
 import React from "react";
 import { db } from "@/lib/firebase";
-import { Loader2 } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { RotateCw } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -29,14 +29,6 @@ import { RepoList } from "./_components/repos-list";
 import { BranchList } from "./_components/branches-list";
 import { TemplateList } from "./_components/templates-list";
 import { getUserTemplates } from "@/server/template-queries";
-
-const Icons: {
-  spinner: React.FC<React.SVGProps<SVGSVGElement>>;
-} = {
-  spinner: Loader2,
-};
-
-export const dynamic = "force-dynamic";
 
 const RepoSchema = z.object({
   id: z.string(),
@@ -294,112 +286,112 @@ const GenerateReport = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {step === 1 && (
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-3xl font-bold">
-                      1. Choose the Repository
-                    </h2>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => location.reload()}
-                          >
-                            <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Reset the form</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>{" "}
-                  <p>
-                    Select the repository you want to generate the report for.
-                    You can only proceed with one repository at a time.
-                  </p>
-                  {reposLoading ? (
-                    <p>Loading your repositories...</p>
-                  ) : (
-                    <RepoList
-                      form={form}
-                      repos={repos}
-                      handleRepoSelect={handleRepoSelect}
-                    />
-                  )}
-                </div>
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl font-bold">
+                    1. Choose the Repository
+                  </h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => location.reload()}
+                        >
+                          <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Reset the form</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>{" "}
+                <p>
+                  Select the repository you want to generate the report for. You
+                  can only proceed with one repository at a time.
+                </p>
+                {reposLoading ? (
+                  <p>Loading your repositories...</p>
+                ) : (
+                  <RepoList
+                    form={form}
+                    repos={repos}
+                    handleRepoSelect={handleRepoSelect}
+                  />
+                )}
+              </div>
             )}
             {step === 2 && (
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-3xl font-bold">2. Choose the Branch</h2>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => location.reload()}
-                          >
-                            <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Reset the form</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>{" "}
-                  <p>
-                    Select the branch you want to generate the report for. You
-                    can only proceed with one branch at a time.
-                  </p>
-                  <BranchList
-                    form={form}
-                    selectedRepos={selectedRepos}
-                    handleBranchSelect={handleBranchSelect}
-                  />
-                </div>
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl font-bold">2. Choose the Branch</h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => location.reload()}
+                        >
+                          <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Reset the form</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>{" "}
+                <p>
+                  Select the branch you want to generate the report for. You can
+                  only proceed with one branch at a time.
+                </p>
+                <BranchList
+                  form={form}
+                  selectedRepos={selectedRepos}
+                  handleBranchSelect={handleBranchSelect}
+                />
+              </div>
             )}
             {step === 3 && (
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-3xl font-bold">
-                      3. Choose the Date Range
-                    </h2>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => location.reload()}
-                          >
-                            <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Reset the form</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>{" "}
-                  <p>
-                    Select the date range you want to generate the report for.
-                  </p>
-                  <FormField
-                    control={form.control}
-                    name="dateRange"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date Range</FormLabel>
-                        <DatePickerWithRange field={field as any} />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl font-bold">
+                    3. Choose the Date Range
+                  </h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => location.reload()}
+                        >
+                          <RotateCw className="h-[1.2rem] w-[1.2rem] transition-transform duration-500 hover:animate-rotate-full" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Reset the form</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>{" "}
+                <p>
+                  Select the date range you want to generate the report for.
+                </p>
+                <FormField
+                  control={form.control}
+                  name="dateRange"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date Range</FormLabel>
+                      <DatePickerWithRange field={field as any} />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
             {step === 4 && (
               <div className="space-y-5">
@@ -431,7 +423,7 @@ const GenerateReport = () => {
         </Form>
         {reportGenerating ? (
           <div className="flex flex-col justify-center items-center">
-            <Icons.spinner className="h-16 w-16 animate-spin" />
+            <Loader2 className="h-16 w-16 animate-spin" />
             <p className="text-center">Generating your report...</p>
           </div>
         ) : null}
