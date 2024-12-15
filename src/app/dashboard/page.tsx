@@ -27,6 +27,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       if (!userId) return;
       setLoading(true);
+      console.log(userId)
       try {
         const [repos, reports, templates] = await Promise.all([
           getUserRepos(userId),
@@ -44,7 +45,8 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [userId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const cardData = [
     {

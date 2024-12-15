@@ -62,7 +62,7 @@ npm install
 ### Set API Keys
 ### Create a .env.local file in the project root and add the following keys:
 ```bash
-BASE_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
 WEBHOOK_SECRET=your_webhook_secret
