@@ -4,12 +4,13 @@ import { doc, updateDoc } from "firebase/firestore";
 
 export async function POST(req: Request) {
   const { userId, provider } = await req.json();
-
+  console.log("Generating token");
   try {
     const tokenData = await clerkClient().users.getUserOauthAccessToken(
       userId,
       provider
     );
+
 
     const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
 

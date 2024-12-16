@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     let accessToken = userDoc.data().accessToken;
 
     if (!accessToken) {
-      await fetch(`${process.env.BASE_URL}/api/get-access-token`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-access-token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,6 +121,36 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
+    console.error("Error fetching repositories:", error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    const userId = auth().userId;
+    if (!userId) return new Response("User ID is required", { status: 400 });
+
+    const { success } = await ratelimit.limit("get-repos-" + userId);
+    if (!success) throw new Error("Rate limit exceeded");
+
+    const userDocName = process.env.NEXT_PUBLIC_DB_USERS_DOC as string;
+    let userDoc = await getDoc(doc(db, `${userDocName}/${userId}`));
+    if (!userDoc.exists()) return new Response("User not found", { status: 404 });
+
+    let accessToken = userDoc.data().accessToken;
+    const githubRepos: Array<any> = await getPaginatedData(
+      "https://api.github.com/user/repos?sort=pushed",
+      accessToken
+    );
+    return new Response(JSON.stringify(githubRepos), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+  catch (error) {
     console.error("Error fetching repositories:", error);
     return new Response("Internal Server Error", { status: 500 });
   }

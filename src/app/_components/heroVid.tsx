@@ -2,21 +2,9 @@
 import React from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
-import getAsset from "@/server/get-asset";
 
 function HeroVid() {
-  const [imgURL, setImgURL] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    const fetchThumbnail = async () => {
-      const url = await getAsset("assets/dashboard.png");
-      console.log(url);
-      return url;
-    };
-    fetchThumbnail().then((url) => {
-      setImgURL(url);
-    });
-  }, []);
+  const [imgURL, setImgURL] = React.useState<string | null>("https://firebasestorage.googleapis.com/v0/b/autoreportsai-f6610.appspot.com/o/assets%2Fdashboard.png?alt=media&token=241ed5ef-4ec5-4dd4-8f03-5d624138eda8");
 
   return (
     <BlurFade inView>

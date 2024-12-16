@@ -1,8 +1,9 @@
+import axios from "axios";
 import { Webhook } from "svix";
-import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { headers } from "next/headers";
+import { doc, setDoc } from "firebase/firestore";
+import { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -67,7 +68,18 @@ export async function POST(req: Request) {
     const { first_name, last_name, email_addresses, id } = evt.data;
     try {
       // add user to db
-      await setDoc(doc(db, userDocName, id), evt.data);
+      await setDoc(doc(db, userDocName, id), {...evt.data, firstReqSent:false});
+      console.log("Generating token on sign up")
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-access-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: id,
+          provider: "oauth_github",
+        }),
+      });
       console.log("User created successfully");
     } catch (error) {
       console.error("Error inserting user:", error);

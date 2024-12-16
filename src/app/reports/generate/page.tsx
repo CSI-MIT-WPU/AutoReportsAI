@@ -83,8 +83,7 @@ const GenerateReport = () => {
   const [templates, setTemplates] = React.useState<Template[]>([]);
   const [selectedRepos, setSelectedRepos] = React.useState<Repo[]>([]);
   const [reposLoading, setReposLoading] = React.useState<boolean>(false);
-  const [reportGenerating, setReportGenerating] =
-    React.useState<boolean>(false);
+  const [reportGenerating, setReportGenerating] = React.useState<boolean>(false);
 
   const nextStep = () => {
     if (step === 1) {
@@ -255,28 +254,23 @@ const GenerateReport = () => {
   };
 
   React.useEffect(() => {
-    if (!user) {
-      return;
-    }
-    setReposLoading(true);
-    getUserRepos(user.userId as string)
-      .then((data) => {
-        setRepos(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching repositories:", error);
-      })
-      .finally(() => {
+    const fetchData = async () => {
+      setReposLoading(true);
+      if (user) {
+        const result = await Promise.all([
+          getUserRepos(user.userId as string),
+          getUserTemplates(user.userId as string),
+        ]).catch((error) => {
+          console.error("Error fetching data:", error);
+          return [[], []];
+        });
+        const [repos, templates] = result;
+        setRepos(repos);
+        setTemplates(templates);
         setReposLoading(false);
-      });
-
-    getUserTemplates(user.userId as string)
-      .then((data) => {
-        setTemplates(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching templates: ", error);
-      });
+      }
+    }
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
