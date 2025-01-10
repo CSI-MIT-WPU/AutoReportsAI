@@ -411,19 +411,19 @@ const GenerateReport = () => {
                   Next
                 </Button>
               )}
-              {step === 4 && <Button type="submit">Generate Report</Button>}
+              {step === 4 && 
+              <Button type="submit">
+                {
+                  reportGenerating ? (
+                    <Loader2 className="h-16 w-16 animate-spin" />
+                  ) : null
+                }
+                Submit
+              </Button>
+              }
             </div>
           </form>
         </Form>
-        {reportGenerating ? (
-          <div className="flex flex-col justify-center items-center">
-            <Loader2 className="h-16 w-16 animate-spin" />
-            <p className="text-center">Generating your report...</p>
-          </div>
-        ) : null}
-        {report && (
-          <Textarea className="w-full" rows={30} value={report} readOnly />
-        )}
       </div>
     </section>
   );

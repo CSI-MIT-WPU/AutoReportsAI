@@ -15,7 +15,7 @@ export default function FAQS() {
         <p className="text-sm tracking-wide">FAQS</p>
         <h2 className="text-5xl font-semibold">Frequently asked questions</h2>
       </div>
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full max-w-lg">
         <AccordionItem value="item-1">
           <AccordionTrigger>How does the app generate reports from GitHub commits?</AccordionTrigger>
           <AccordionContent>

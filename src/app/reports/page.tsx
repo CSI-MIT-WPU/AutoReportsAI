@@ -47,6 +47,7 @@ const Reports = () => {
       getUserReports(userId)
         .then((data) => {
           setReports(data);
+          setSelectedReport(data[data.length - 1]);
           console.log(data);
         })
         .catch((error) => {
@@ -69,7 +70,7 @@ const Reports = () => {
       }}
       className="min-h-screen items-stretch"
     >
-      <ResizablePanel defaultSize={440} minSize={30}>
+      <ResizablePanel defaultSize={440} minSize={30} maxSize={50}>
         <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <form>
             <div className="relative">
