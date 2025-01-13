@@ -40,11 +40,19 @@ export default function TemplatesMobileViewer({
                                 <div className="text-sm">{template.description}</div>
                             </div>
                             <Separator />
-                            <iframe
-                                src={template.fileUrl}
-                                className="h-[32rem]"
-                                style={{ width: "100%" }}
-                            />
+                            {
+                                template.fileUrl ? (
+                                    <iframe
+                                        src={template.fileUrl}
+                                        className="h-[32rem]"
+                                        style={{ width: "100%" }}
+                                    />
+                                ) : (
+                                    <div className="text-center text-muted-foreground">
+                                        Preview not available
+                                    </div>
+                                )
+                            }
                         </div>
                     ) : (
                         <div className="p-8 text-center text-muted-foreground">

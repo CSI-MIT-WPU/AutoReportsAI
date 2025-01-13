@@ -71,7 +71,7 @@ export default function Templates() {
       }}
       className="min-h-screen items-stretch"
     >
-      <ResizablePanel defaultSize={440} minSize={30}>
+      <ResizablePanel defaultSize={440} minSize={30} maxSize={50}>
         <div className="flex justify-between gap-4 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <form className="w-[80%]">
             <div className="relative">

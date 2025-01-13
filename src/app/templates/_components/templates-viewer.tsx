@@ -31,11 +31,19 @@ export const TemplateViewer: React.FC<{
                 </div>
               </div>
               <div className="w-full h-full flex justify-center items-center">
-                <iframe
-                  src={customTemplate.fileUrl}
-                  className="h-[32rem]"
-                  style={{ width: "70%" }}
-                />
+                {
+                  customTemplate.fileUrl ? (
+                    <iframe
+                      src={customTemplate.fileUrl}
+                      className="h-[32rem]"
+                      style={{ width: "70%" }}
+                    />
+                  ) : (
+                    <div className="text-center text-gray-300 dark:text-neutral-300">
+                      Preview not available
+                    </div>
+                  )
+                }
               </div>
             </div>
           </div>
